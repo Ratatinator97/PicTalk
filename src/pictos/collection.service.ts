@@ -35,4 +35,8 @@ export class CollectionService {
       filename,
     );
   }
+
+  async deleteCollection(id: number, user: User): Promise<void> {
+    this.collectionRepository.deleteCollection(id, user);
+  }
 }

@@ -6,6 +6,7 @@ import {
   ManyToOne,
 } from 'typeorm';
 import { User } from '../auth/user.entity';
+import { Collection } from './collection.entity';
 
 @Entity()
 export class Picto extends BaseEntity {
@@ -26,6 +27,13 @@ export class Picto extends BaseEntity {
 
   @Column()
   fatherId: number;
+
+  @ManyToOne(
+    type => Collection,
+    collection => collection.pictos,
+    { eager: false },
+  )
+  collection: Collection;
 
   @ManyToOne(
     type => User,

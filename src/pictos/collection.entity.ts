@@ -4,6 +4,7 @@ import {
   PrimaryGeneratedColumn,
   Column,
   ManyToOne,
+  OneToMany,
 } from 'typeorm';
 import { User } from 'src/auth/user.entity';
 import { Picto } from 'src/pictos/picto.entity';
@@ -21,6 +22,13 @@ export class Collection extends BaseEntity {
 
   @Column()
   color: string;
+
+  @OneToMany(
+    type => Picto,
+    picto => picto.collection,
+    { eager: true },
+  )
+  pictos: Picto[];
 
   @ManyToOne(
     type => User,

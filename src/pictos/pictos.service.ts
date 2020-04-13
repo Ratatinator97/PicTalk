@@ -29,4 +29,12 @@ export class PictosService {
   ): Promise<Picto> {
     return this.pictoRepository.createPicto(createPictoDto, user, filename);
   }
+
+  async deletePicto(id: number, user: User): Promise<void> {
+    const result = await this.pictoRepository.delete({ id, userId: user.id });
+
+    if (result.affected === 0) {
+      throw new NotFoundException(`Task with id "${id}" not found`);
+    }
+  }
 }

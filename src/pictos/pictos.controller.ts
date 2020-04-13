@@ -12,6 +12,7 @@ import {
   UseInterceptors,
   UploadedFile,
   InternalServerErrorException,
+  Delete,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { GetUser } from 'src/auth/get-user.decorator';
@@ -25,6 +26,7 @@ import { Collection } from './collection.entity';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { imageFileFilter, editFileName } from './file-upload.utils';
 import { diskStorage } from 'multer';
+import { stringify } from 'querystring';
 
 @Controller('pictos')
 @UseGuards(AuthGuard())
@@ -80,7 +82,11 @@ seeUploadedFile(@Param('imgpath') image, @Res() res) {
       )} of "${user.username}"`,
     );
     if (file) {
-      return this.pictosService.createPicto(createPictoDto, user, file.filename);
+      return this.pictosService.createPicto(
+        createPictoDto,
+        user,
+        file.filename,
+      );
     } else {
       throw new InternalServerErrorException('File needed');
     }
@@ -118,5 +124,21 @@ seeUploadedFile(@Param('imgpath') image, @Res() res) {
     } else {
       throw new InternalServerErrorException('File needed');
     }
+  }
+
+  @Delete('/collection/:id')
+  deleteCollection(
+    @Param('id', ParseIntPipe) id: number,
+    @GetUser() user: User,
+  ): Promise<void> {
+    return this.collectionService.deleteCollection(id, user);
+  }
+
+  @Delete('/:id')
+  deletePicto(
+    @Param('id', ParseIntPipe) id: number,
+    @GetUser() user: User,
+  ): Promise<void> {
+    return this.pictosService.deletePicto(id, user);
   }
 }
