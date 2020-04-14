@@ -37,7 +37,7 @@ export class CollectionService {
     );
   }
 
-  async deleteCollection(id: number, user: User): Promise<void> {
+  async deleteCollection(id: number, user: User): Promise<Collection> {
     const collection = await this.collectionRepository.findOne({
       id: id,
       userId: user.id,
@@ -45,12 +45,12 @@ export class CollectionService {
     if (!collection) {
       throw new NotFoundException();
     }
+
     unlink('./files/' + collection.path, () => {
       this.logger.verbose(
         `Collection of path "${collection.path}" successfully deleted`,
       );
-    }); //TODO better cb collection.path can change when the cb will be executed...
-
+    });
     const result = await this.collectionRepository.delete({
       id: id,
       userId: user.id,
@@ -59,6 +59,7 @@ export class CollectionService {
     if (result.affected === 0) {
       throw new NotFoundException(`Collection with id "${id}" not found`);
     }
+    return collection;
   }
 
   async isCollection(id: number, user: User): Promise<boolean> {

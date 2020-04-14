@@ -142,11 +142,15 @@ seeUploadedFile(@Param('imgpath') image, @Res() res) {
   }
 
   @Delete('/collection/:id')
-  deleteCollection(
+  async deleteCollection(
     @Param('id', ParseIntPipe) id: number,
     @GetUser() user: User,
   ): Promise<void> {
-    return this.collectionService.deleteCollection(id, user);
+    const collection: Collection = await this.collectionService.deleteCollection(
+      id,
+      user,
+    );
+    return this.pictosService.deletePictoOfCollection(collection, user);
   }
 
   @Delete('/:id')
