@@ -4,7 +4,7 @@ import { CollectionRepository } from './collection.repository';
 import { User } from '../auth/user.entity';
 import { Collection } from './collection.entity';
 import { CreateCollectionDto } from './dto/create-collection.dto';
-
+import { fs } from 'multer';
 @Injectable()
 export class CollectionService {
   constructor(
@@ -16,9 +16,9 @@ export class CollectionService {
     const found = await this.collectionRepository.find({
       where: { userId: user.id },
     });
-    if (!found) {
+    if (found.length == 0) {
       throw new NotFoundException(
-        `Collection with fatherId "${user.id}" not found`,
+        `The user "${user.id}" doen't have any Collections`,
       );
     }
     return found;
@@ -37,6 +37,28 @@ export class CollectionService {
   }
 
   async deleteCollection(id: number, user: User): Promise<void> {
-    this.collectionRepository.deleteCollection(id, user);
+    const collection = await this.collectionRepository.findOne({
+      id,
+      userId: user.id,
+    });
+    fs.unlink(collection.path);
+    const result = await this.collectionRepository.delete({
+      id,
+      userId: user.id,
+    });
+
+    if (result.affected === 0) {
+      throw new NotFoundException(`Task with id "${id}" not found`);
+    }
+  }
+
+  async isCollection(id: number, user: User): Promise<boolean> {
+    const found = await this.collectionRepository.findOne({
+      where: { id, userId: user.id },
+    });
+    if (!found) {
+      return false;
+    }
+    return true;
   }
 }

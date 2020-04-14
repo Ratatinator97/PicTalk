@@ -71,22 +71,38 @@ seeUploadedFile(@Param('imgpath') image, @Res() res) {
       fileFilter: imageFileFilter,
     }),
   )
-  createPicto(
+  async createPicto(
     @Body() createPictoDto: CreatePictoDto,
     @GetUser() user: User,
     @UploadedFile() file,
   ): Promise<Picto> {
-    this.logger.verbose(
-      `User "${user.username}" creating a new Picto. Data: ${JSON.stringify(
-        createPictoDto,
-      )} of "${user.username}"`,
-    );
     if (file) {
-      return this.pictosService.createPicto(
-        createPictoDto,
+      const isCollection: boolean = await this.collectionService.isCollection(
+        createPictoDto.fatherId,
         user,
-        file.filename,
       );
+      const isFolder: boolean = await this.pictosService.isFolder(
+        createPictoDto.fatherId,
+        user,
+      );
+      this.logger.verbose(`Collection: "${isCollection}, Folder: ${isFolder}"`);
+      this.logger.verbose(`Can we go ?: "${isCollection || isFolder}`);
+      if (isCollection || isFolder) {
+        this.logger.verbose(
+          `User "${user.username}" creating a new Picto. Data: ${JSON.stringify(
+            createPictoDto,
+          )} of "${user.username}"`,
+        );
+        return this.pictosService.createPicto(
+          createPictoDto,
+          user,
+          file.filename,
+        );
+      } else {
+        throw new InternalServerErrorException(
+          `Collection doesn't exist OR the picto with id: "${createPictoDto.fatherId}" isn't a folder`,
+        );
+      }
     } else {
       throw new InternalServerErrorException('File needed');
     }
