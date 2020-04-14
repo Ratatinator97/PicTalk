@@ -3,8 +3,7 @@ import { Collection } from './collection.entity';
 import { Logger, InternalServerErrorException } from '@nestjs/common';
 import { User } from 'src/auth/user.entity';
 import { CreateCollectionDto } from './dto/create-collection.dto';
-import { PictoRepository } from './picto.repository';
-import { InjectRepository } from '@nestjs/typeorm';
+
 
 @EntityRepository(Collection)
 export class CollectionRepository extends Repository<Collection> {
