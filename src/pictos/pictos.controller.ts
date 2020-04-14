@@ -48,15 +48,20 @@ seeUploadedFile(@Param('imgpath') image, @Res() res) {
     return this.collectionService.getUserCollections(user);
   }
 
-  @Get(':id') //To indicate if it's a collection or a picto we can pass parameters (need to have a Dto then)
-  getPictos(
+  @Get(':id/:collectionId')
+  async getPictos(
     @Param('id', ParseIntPipe) id: number,
+    @Param('collectionId', ParseIntPipe) collectionId: number,
     @GetUser() user: User,
   ): Promise<Picto[]> {
     this.logger.verbose(
       `User "${user.username}" retrieving childs pictos of "${id}" of "${user.username}"`,
     );
-    return this.pictosService.getPictos(id, user);
+    const collection: Collection = await this.collectionService.getCollection(
+      collectionId,
+      user,
+    );
+    return this.pictosService.getPictos(id, user, collection);
   }
 
   @Post('')

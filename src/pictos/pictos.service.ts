@@ -20,9 +20,13 @@ export class PictosService {
   ) {}
   private logger = new Logger('TasksController');
 
-  async getPictos(id: number, user: User): Promise<Picto[]> {
+  async getPictos(
+    id: number,
+    user: User,
+    collection: Collection,
+  ): Promise<Picto[]> {
     const found = await this.pictoRepository.find({
-      where: { fatherId: id, userId: user.id },
+      where: { fatherId: id, userId: user.id, collection: collection },
     });
     console.log(found);
     if (found.length == 0) {
