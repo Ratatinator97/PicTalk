@@ -76,16 +76,26 @@ seeUploadedFile(@Param('imgpath') image, @Res() res) {
     @UploadedFile() file,
   ): Promise<Picto> {
     if (file) {
+      let collection: Collection;
       const isCollection: boolean = await this.collectionService.isCollection(
         createPictoDto.fatherId,
         user,
       );
+      if (isCollection) {
+        collection = await this.collectionService.getCollection(
+          createPictoDto.fatherId,
+          user,
+        );
+      } else {
+        collection = await this.pictosService.getCollection(
+          createPictoDto.fatherId,
+          user,
+        );
+      }
       const isFolder: boolean = await this.pictosService.isFolder(
         createPictoDto.fatherId,
         user,
       );
-      this.logger.verbose(`Collection: "${isCollection}, Folder: ${isFolder}"`);
-      this.logger.verbose(`Can we go ?: "${isCollection || isFolder}`);
       if (isCollection || isFolder) {
         this.logger.verbose(
           `User "${user.username}" creating a new Picto. Data: ${JSON.stringify(
@@ -96,6 +106,7 @@ seeUploadedFile(@Param('imgpath') image, @Res() res) {
           createPictoDto,
           user,
           file.filename,
+          collection,
         );
       } else {
         throw new InternalServerErrorException(

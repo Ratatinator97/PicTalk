@@ -62,6 +62,17 @@ export class CollectionService {
     return collection;
   }
 
+  async getCollection(id: number, user: User): Promise<Collection> {
+    const collection = await this.collectionRepository.findOne({
+      where: { userId: user.id, id },
+    });
+    if (collection) {
+      return collection;
+    } else {
+      throw new NotFoundException(`Collection with id: "${id} not found"`);
+    }
+  }
+
   async isCollection(id: number, user: User): Promise<boolean> {
     const found = await this.collectionRepository.findOne({
       where: { id, userId: user.id },

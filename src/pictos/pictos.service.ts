@@ -35,8 +35,14 @@ export class PictosService {
     createPictoDto: CreatePictoDto,
     user: User,
     filename: string,
+    collection: Collection,
   ): Promise<Picto> {
-    return this.pictoRepository.createPicto(createPictoDto, user, filename);
+    return this.pictoRepository.createPicto(
+      createPictoDto,
+      user,
+      filename,
+      collection,
+    );
   }
 
   async deletePicto(id: number, user: User): Promise<void> {
@@ -100,13 +106,25 @@ export class PictosService {
     return found.folder;
   }
 
+  async getCollection(id: number, user: User): Promise<Collection> {
+    const picto: Picto = await this.pictoRepository.findOne({
+      where: { id, userId: user.id },
+    });
+    try {
+      const collection: Collection = picto.collection;
+      return collection;
+    } catch (error) {
+      throw new NotFoundException();
+    }
+  }
+
   async deleteMultiple(pictos: Picto[]) {
     pictos.map(picto => {
       unlink('./files/' + picto.path, () => {
         this.logger.verbose(
           `Picto of path "${picto.path}" successfully deleted`,
         );
-      }); //Probablement mettre tout le chemin
+      });
     });
   }
 }

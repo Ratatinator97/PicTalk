@@ -1,8 +1,13 @@
 import { EntityRepository, Repository } from 'typeorm';
 import { Picto } from './picto.entity';
-import { Logger, InternalServerErrorException } from '@nestjs/common';
+import {
+  Logger,
+  InternalServerErrorException,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreatePictoDto } from './dto/create-picto.dto';
 import { User } from 'src/auth/user.entity';
+import { Collection } from './collection.entity';
 @EntityRepository(Picto)
 export class PictoRepository extends Repository<Picto> {
   private logger = new Logger('PictoRepository');
@@ -11,10 +16,19 @@ export class PictoRepository extends Repository<Picto> {
     createPictoDto: CreatePictoDto,
     user: User,
     filename: string,
+    collection: Collection,
   ) {
     const { speech, meaning, folder, fatherId } = createPictoDto;
-
     const picto = new Picto();
+
+    if (fatherId != 0) {
+      const found: Picto = await this.findOne({
+        where: { id: fatherId, userId: user.id },
+      });
+      if (!found) {
+        throw new NotFoundException();
+      }
+    }
 
     picto.speech = speech;
     picto.meaning = meaning;
@@ -22,6 +36,7 @@ export class PictoRepository extends Repository<Picto> {
     picto.fatherId = fatherId;
     picto.path = filename;
     picto.user = user;
+    picto.collection = collection;
 
     try {
       await picto.save();
