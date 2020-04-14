@@ -36,12 +36,6 @@ export class PictosController {
     private collectionService: CollectionService,
   ) {}
 
-  /* @Get(':imgpath')
-seeUploadedFile(@Param('imgpath') image, @Res() res) {
-  return res.sendFile(image, { root: './files' });
-}
-*/
-
   @Get('')
   getUserCollections(@GetUser() user: User): Promise<Collection[]> {
     this.logger.verbose(`User "${user.username}" retrieving collections`);
@@ -64,7 +58,7 @@ seeUploadedFile(@Param('imgpath') image, @Res() res) {
     return this.pictosService.getPictos(id, user, collection);
   }
 
-  @Post('')
+  @Post(':collectionId')
   @UsePipes(ValidationPipe)
   @UseInterceptors(
     FileInterceptor('image', {
@@ -76,36 +70,25 @@ seeUploadedFile(@Param('imgpath') image, @Res() res) {
     }),
   )
   async createPicto(
+    @Param('collectionId', ParseIntPipe) collectionId: number,
     @Body() createPictoDto: CreatePictoDto,
     @GetUser() user: User,
     @UploadedFile() file,
   ): Promise<Picto> {
     if (file) {
-      let collection: Collection;
-      const isCollection: boolean = await this.collectionService.isCollection(
-        createPictoDto.fatherId,
-        user,
-      );
-      if (isCollection) {
-        collection = await this.collectionService.getCollection(
-          createPictoDto.fatherId,
-          user,
-        );
-      } else {
-        collection = await this.pictosService.getCollection(
-          createPictoDto.fatherId,
-          user,
-        );
-      }
       const isFolder: boolean = await this.pictosService.isFolder(
         createPictoDto.fatherId,
         user,
       );
-      if (isCollection || isFolder) {
+      if (isFolder) {
         this.logger.verbose(
           `User "${user.username}" creating a new Picto. Data: ${JSON.stringify(
             createPictoDto,
           )} of "${user.username}"`,
+        );
+        const collection: Collection = await this.collectionService.getCollection(
+          collectionId,
+          user,
         );
         return this.pictosService.createPicto(
           createPictoDto,
