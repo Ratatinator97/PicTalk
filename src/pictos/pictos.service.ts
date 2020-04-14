@@ -43,24 +43,34 @@ export class PictosService {
     const picto: Picto = await this.pictoRepository.findOne({
       where: { id: id, userId: id },
     });
-    if (picto.folder) {
-      const pictos: Picto[] = await this.pictoRepository.find({
-        where: { userId: id, fatherId: picto.id },
-      });
-      this.deleteMultiple(pictos);
+    if (picto) {
+      await this.deletePictoRecursive(picto, user);
     } else {
-      unlink('./files/' + picto.path, () => {
-        this.logger.verbose(
-          `Picto of path "${picto.path}" successfully deleted`,
-        );
-      }); //TODO better cb picto.path can change when the cb will be executed...
+      throw new NotFoundException();
     }
+  }
 
-    const result = await this.pictoRepository.delete({ id, userId: user.id });
+  async deletePictoRecursive(picto: Picto, user: User): Promise<any[]> {
+    unlink('./files/' + picto.path, () => {
+      this.logger.verbose(`Picto of path "${picto.path}" successfully deleted`);
+    });
+    const pictos: Picto[] = await this.pictoRepository.find({
+      where: { fatherId: picto.id, userId: user.id },
+    });
+
+    const result = await this.pictoRepository.delete({
+      id: picto.id,
+      userId: user.id,
+    });
     if (result.affected === 0) {
-      throw new NotFoundException(`Task with id "${id}" not found`);
+      throw new NotFoundException(`Task with id "${picto.id}" not found`);
     }
-  } //Needs to be recursive, this way will not work
+    if (pictos.length == 0) {
+      return;
+    } else {
+      return pictos.map(picto => this.deletePictoRecursive(picto, user));
+    }
+  }
 
   async deletePictoOfCollection(
     collection: Collection,
