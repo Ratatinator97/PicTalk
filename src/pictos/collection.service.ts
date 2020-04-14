@@ -1,16 +1,17 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CollectionRepository } from './collection.repository';
 import { User } from '../auth/user.entity';
 import { Collection } from './collection.entity';
 import { CreateCollectionDto } from './dto/create-collection.dto';
-import { fs } from 'multer';
+import { unlink } from 'fs';
 @Injectable()
 export class CollectionService {
   constructor(
     @InjectRepository(CollectionRepository)
     private collectionRepository: CollectionRepository,
   ) {}
+  private logger = new Logger('TasksController');
 
   async getUserCollections(user: User): Promise<Collection[]> {
     const found = await this.collectionRepository.find({
@@ -38,17 +39,25 @@ export class CollectionService {
 
   async deleteCollection(id: number, user: User): Promise<void> {
     const collection = await this.collectionRepository.findOne({
-      id,
+      id: id,
       userId: user.id,
     });
-    fs.unlink(collection.path);
+    if (!collection) {
+      throw new NotFoundException();
+    }
+    unlink('./files/' + collection.path, () => {
+      this.logger.verbose(
+        `Collection of path "${collection.path}" successfully deleted`,
+      );
+    }); //TODO better cb collection.path can change when the cb will be executed...
+
     const result = await this.collectionRepository.delete({
-      id,
+      id: id,
       userId: user.id,
     });
 
     if (result.affected === 0) {
-      throw new NotFoundException(`Task with id "${id}" not found`);
+      throw new NotFoundException(`Collection with id "${id}" not found`);
     }
   }
 

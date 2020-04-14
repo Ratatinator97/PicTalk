@@ -26,7 +26,6 @@ import { Collection } from './collection.entity';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { imageFileFilter, editFileName } from './file-upload.utils';
 import { diskStorage } from 'multer';
-import { stringify } from 'querystring';
 
 @Controller('pictos')
 @UseGuards(AuthGuard())
