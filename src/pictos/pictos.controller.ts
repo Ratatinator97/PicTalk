@@ -48,7 +48,7 @@ seeUploadedFile(@Param('imgpath') image, @Res() res) {
     return this.collectionService.getUserCollections(user);
   }
 
-  @Get(':id')
+  @Get(':id') //To indicate if it's a collection or a picto we can pass parameters (need to have a Dto then)
   getPictos(
     @Param('id', ParseIntPipe) id: number,
     @GetUser() user: User,

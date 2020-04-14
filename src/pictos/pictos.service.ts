@@ -43,15 +43,24 @@ export class PictosService {
     const picto: Picto = await this.pictoRepository.findOne({
       where: { id: id, userId: id },
     });
-    unlink('./files/' + picto.path, () => {
-      this.logger.verbose(`Picto of path "${picto.path}" successfully deleted`);
-    }); //TODO better cb picto.path can change when the cb will be executed...
+    if (picto.folder) {
+      const pictos: Picto[] = await this.pictoRepository.find({
+        where: { userId: id, fatherId: picto.id },
+      });
+      this.deleteMultiple(pictos);
+    } else {
+      unlink('./files/' + picto.path, () => {
+        this.logger.verbose(
+          `Picto of path "${picto.path}" successfully deleted`,
+        );
+      }); //TODO better cb picto.path can change when the cb will be executed...
+    }
 
     const result = await this.pictoRepository.delete({ id, userId: user.id });
     if (result.affected === 0) {
       throw new NotFoundException(`Task with id "${id}" not found`);
     }
-  }
+  } //Needs to be recursive, this way will not work
 
   async deletePictoOfCollection(
     collection: Collection,
@@ -60,13 +69,7 @@ export class PictosService {
     const pictos: Picto[] = await this.pictoRepository.find({
       where: { collection: collection, userId: user.id },
     });
-    pictos.map(picto => {
-      unlink('./files/' + picto.path, () => {
-        this.logger.verbose(
-          `Picto of path "${picto.path}" successfully deleted`,
-        );
-      }); //Probablement mettre tout le chemin
-    });
+    this.deleteMultiple(pictos);
     try {
       await this.pictoRepository.delete({
         userId: user.id,
@@ -85,5 +88,15 @@ export class PictosService {
       return false;
     }
     return found.folder;
+  }
+
+  async deleteMultiple(pictos: Picto[]) {
+    pictos.map(picto => {
+      unlink('./files/' + picto.path, () => {
+        this.logger.verbose(
+          `Picto of path "${picto.path}" successfully deleted`,
+        );
+      }); //Probablement mettre tout le chemin
+    });
   }
 }
