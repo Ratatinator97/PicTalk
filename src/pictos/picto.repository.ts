@@ -50,6 +50,7 @@ export class PictoRepository extends Repository<Picto> {
       throw new InternalServerErrorException();
     }
     delete picto.user;
+    delete picto.collection;
     return picto;
   }
 }

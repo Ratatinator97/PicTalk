@@ -37,7 +37,7 @@ export class CollectionService {
     );
   }
 
-  async deleteCollection(id: number, user: User): Promise<Collection> {
+  async deleteCollection(id: number, user: User): Promise<void> {
     const collection = await this.collectionRepository.findOne({
       id: id,
       userId: user.id,
@@ -59,7 +59,7 @@ export class CollectionService {
     if (result.affected === 0) {
       throw new NotFoundException(`Collection with id "${id}" not found`);
     }
-    return collection;
+    return;
   }
 
   async getCollection(id: number, user: User): Promise<Collection> {

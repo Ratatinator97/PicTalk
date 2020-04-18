@@ -23,7 +23,7 @@ export class Picto extends BaseEntity {
   speech: string;
 
   @Column()
-  folder: boolean;
+  folder: number;
 
   @Column()
   fatherId: number;

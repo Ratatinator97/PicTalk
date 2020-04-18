@@ -18,7 +18,7 @@ export class PictosService {
     @InjectRepository(PictoRepository)
     private pictoRepository: PictoRepository,
   ) {}
-  private logger = new Logger('TasksController');
+  private logger = new Logger('PictoController');
 
   async getPictos(
     id: number,
@@ -28,10 +28,6 @@ export class PictosService {
     const found = await this.pictoRepository.find({
       where: { fatherId: id, userId: user.id, collection: collection },
     });
-    console.log(found);
-    if (found.length == 0) {
-      throw new NotFoundException(`Task of fatherId "${id}" not found`);
-    }
     return found;
   }
 
@@ -51,7 +47,7 @@ export class PictosService {
 
   async deletePicto(id: number, user: User): Promise<void> {
     const picto: Picto = await this.pictoRepository.findOne({
-      where: { id: id, userId: id },
+      where: { id: id, userId: user.id },
     });
     if (picto) {
       await this.deletePictoRecursive(picto, user);
@@ -73,7 +69,7 @@ export class PictosService {
       userId: user.id,
     });
     if (result.affected === 0) {
-      throw new NotFoundException(`Task with id "${picto.id}" not found`);
+      throw new NotFoundException(`Picto with id "${picto.id}" not found`);
     }
     if (pictos.length == 0) {
       return;
@@ -100,12 +96,12 @@ export class PictosService {
     }
   }
 
-  async isFolder(id: number, user: User): Promise<boolean> {
+  async isFolder(id: number, user: User): Promise<number> {
     const found = await this.pictoRepository.findOne({
       where: { id, userId: user.id },
     });
     if (!found) {
-      return false;
+      return 0;
     }
     return found.folder;
   }

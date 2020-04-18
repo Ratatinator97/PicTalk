@@ -27,7 +27,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { imageFileFilter, editFileName } from './file-upload.utils';
 import { diskStorage } from 'multer';
 
-@Controller('pictos')
+@Controller('pictalk')
 @UseGuards(AuthGuard())
 export class PictosController {
   private logger = new Logger('TasksController');
@@ -36,13 +36,13 @@ export class PictosController {
     private collectionService: CollectionService,
   ) {}
 
-  @Get('')
+  @Get('/collection')
   getUserCollections(@GetUser() user: User): Promise<Collection[]> {
     this.logger.verbose(`User "${user.username}" retrieving collections`);
     return this.collectionService.getUserCollections(user);
   }
 
-  @Get(':id/:collectionId')
+  @Get('picto/:id/:collectionId')
   async getPictos(
     @Param('id', ParseIntPipe) id: number,
     @Param('collectionId', ParseIntPipe) collectionId: number,
@@ -58,7 +58,7 @@ export class PictosController {
     return this.pictosService.getPictos(id, user, collection);
   }
 
-  @Post(':collectionId')
+  @Post('/picto/:collectionId')
   @UsePipes(ValidationPipe)
   @UseInterceptors(
     FileInterceptor('image', {
@@ -76,10 +76,16 @@ export class PictosController {
     @UploadedFile() file,
   ): Promise<Picto> {
     if (file) {
-      const isFolder: boolean = await this.pictosService.isFolder(
-        createPictoDto.fatherId,
-        user,
-      );
+      let isFolder: number;
+      if (createPictoDto.fatherId != 0) {
+        isFolder = await this.pictosService.isFolder(
+          createPictoDto.fatherId,
+          user,
+        );
+      } else {
+        isFolder = 1;
+      }
+
       if (isFolder) {
         this.logger.verbose(
           `User "${user.username}" creating a new Picto. Data: ${JSON.stringify(
@@ -145,14 +151,19 @@ export class PictosController {
     @Param('id', ParseIntPipe) id: number,
     @GetUser() user: User,
   ): Promise<void> {
-    const collection: Collection = await this.collectionService.deleteCollection(
+    const collection: Collection = await this.collectionService.getCollection(
       id,
       user,
     );
-    return this.pictosService.deletePictoOfCollection(collection, user);
+    try {
+      this.pictosService.deletePictoOfCollection(collection, user);
+    } catch (error) {
+      throw new InternalServerErrorException();
+    }
+    return this.collectionService.deleteCollection(id, user);
   }
 
-  @Delete('/:id')
+  @Delete('/picto/:id')
   deletePicto(
     @Param('id', ParseIntPipe) id: number,
     @GetUser() user: User,

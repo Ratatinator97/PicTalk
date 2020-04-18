@@ -8,7 +8,7 @@ export class CreatePictoDto {
   meaning: string;
 
   @IsNotEmpty()
-  folder: boolean;
+  folder: number;
 
   @IsNotEmpty()
   fatherId: number;
