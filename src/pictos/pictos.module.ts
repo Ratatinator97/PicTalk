@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { MulterModule } from '@nestjs/platform-express';
 import { PictosController } from './pictos.controller';
-import { PictosService } from './pictos.service';
+import { PictoService } from './pictos.service';
 import { CollectionService } from './collection.service';
 import { CollectionRepository } from './collection.repository';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -18,6 +18,6 @@ import { AuthModule } from 'src/auth/auth.module';
     AuthModule,
   ],
   controllers: [PictosController],
-  providers: [PictosService, CollectionService],
+  providers: [PictoService, CollectionService],
 })
 export class PictosModule {}

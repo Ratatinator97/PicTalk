@@ -6,8 +6,8 @@ import {
   ManyToOne,
   OneToMany,
 } from 'typeorm';
-import { User } from 'src/auth/user.entity';
-import { Picto } from 'src/pictos/picto.entity';
+import { User } from '../auth/user.entity';
+import { Picto } from './picto.entity';
 
 @Entity()
 export class Collection extends BaseEntity {

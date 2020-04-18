@@ -14,15 +14,16 @@ export class CollectionService {
   private logger = new Logger('TasksController');
 
   async getUserCollections(user: User): Promise<Collection[]> {
-    const found = await this.collectionRepository.find({
+    const collections: Collection[] = await this.collectionRepository.find({
       where: { userId: user.id },
     });
-    if (found.length == 0) {
-      throw new NotFoundException(
-        `The user "${user.id}" doen't have any Collections`,
-      );
+    if (collections.length !== 0) {
+      collections.map(collection => {
+        delete collection.pictos;
+        return collection;
+      });
     }
-    return found;
+    return collections;
   }
 
   async createCollection(

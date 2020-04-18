@@ -13,7 +13,7 @@ import { Collection } from './collection.entity';
 import { unlink } from 'fs';
 
 @Injectable()
-export class PictosService {
+export class PictoService {
   constructor(
     @InjectRepository(PictoRepository)
     private pictoRepository: PictoRepository,

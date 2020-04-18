@@ -18,7 +18,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { GetUser } from 'src/auth/get-user.decorator';
 import { User } from 'src/auth/user.entity';
 import { Picto } from './picto.entity';
-import { PictosService } from './pictos.service';
+import { PictoService } from './pictos.service';
 import { CollectionService } from './collection.service';
 import { CreatePictoDto } from './dto/create-picto.dto';
 import { CreateCollectionDto } from './dto/create-collection.dto';
@@ -32,7 +32,7 @@ import { diskStorage } from 'multer';
 export class PictosController {
   private logger = new Logger('TasksController');
   constructor(
-    private pictosService: PictosService,
+    private pictoService: PictoService,
     private collectionService: CollectionService,
   ) {}
 
@@ -55,7 +55,7 @@ export class PictosController {
       collectionId,
       user,
     );
-    return this.pictosService.getPictos(id, user, collection);
+    return this.pictoService.getPictos(id, user, collection);
   }
 
   @Post('/picto/:collectionId')
@@ -78,7 +78,7 @@ export class PictosController {
     if (file) {
       let isFolder: number;
       if (createPictoDto.fatherId != 0) {
-        isFolder = await this.pictosService.isFolder(
+        isFolder = await this.pictoService.isFolder(
           createPictoDto.fatherId,
           user,
         );
@@ -96,7 +96,7 @@ export class PictosController {
           collectionId,
           user,
         );
-        return this.pictosService.createPicto(
+        return this.pictoService.createPicto(
           createPictoDto,
           user,
           file.filename,
@@ -156,7 +156,7 @@ export class PictosController {
       user,
     );
     try {
-      this.pictosService.deletePictoOfCollection(collection, user);
+      this.pictoService.deletePictoOfCollection(collection, user);
     } catch (error) {
       throw new InternalServerErrorException();
     }
@@ -168,6 +168,6 @@ export class PictosController {
     @Param('id', ParseIntPipe) id: number,
     @GetUser() user: User,
   ): Promise<void> {
-    return this.pictosService.deletePicto(id, user);
+    return this.pictoService.deletePicto(id, user);
   }
 }
