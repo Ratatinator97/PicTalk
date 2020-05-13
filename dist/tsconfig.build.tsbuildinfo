@@ -2422,7 +2422,7 @@
         "affectsGlobalScope": false
       },
       "../src/config/typeorm.config.ts": {
-        "version": "05ec9e26761532d1e1c16051c2cbe4b13b44c0187e556423b998d5248a061398",
+        "version": "f94c97f75056ef54bedba924f587f8d6e278fbaba654a48538aedfa069ae2507",
         "signature": "e48d1e836452920a823efe3c1f15dbaa531cbb2c536b3d47ad06ed5201a8b847",
         "affectsGlobalScope": false
       },
