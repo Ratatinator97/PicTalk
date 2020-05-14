@@ -2,6 +2,8 @@ import { TypeOrmModuleOptions } from '@nestjs/typeorm';
 import * as config from 'config';
 
 const dbConfig = config.get('db');
+require('dotenv').config();
+console.log('THE PROCESS ENV OF DBNAME IS:', process.env.DB_NAME);
 
 export const typeOrmConfig: TypeOrmModuleOptions = {
   type: dbConfig.type,

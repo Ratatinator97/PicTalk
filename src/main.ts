@@ -3,6 +3,8 @@ import { AppModule } from './app.module';
 import { Logger } from '@nestjs/common';
 import * as config from 'config';
 
+require('dotenv').config();
+
 async function bootstrap() {
   const serverConfig = config.get('server');
 
