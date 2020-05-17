@@ -20,10 +20,34 @@ export class User extends BaseEntity {
   username: string;
 
   @Column()
+  name: string;
+
+  @Column()
+  surname: string;
+
+  @Column()
+  address: string;
+
+  @Column()
+  age: string;
+
+  @Column()
+  gender: string;
+
+  @Column()
+  phone: string;
+
+  @Column()
   password: string;
 
   @Column()
   salt: string;
+
+  @Column()
+  resetPasswordToken: string;
+
+  @Column()
+  resetPasswordExpires: string;
 
   @OneToMany(
     type => Collection,
