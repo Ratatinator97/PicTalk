@@ -11,6 +11,7 @@ import { Picto } from './picto.entity';
 import { CreatePictoDto } from './dto/create-picto.dto';
 import { Collection } from './collection.entity';
 import { unlink } from 'fs';
+import { EditPictoDto } from './dto/edit-picto.dto';
 
 @Injectable()
 export class PictoService {
@@ -93,6 +94,18 @@ export class PictoService {
       });
     } catch (error) {
       throw new InternalServerErrorException();
+    }
+  }
+  async editPicto(
+    id: number,
+    editPictoDto: EditPictoDto,
+    user: User,
+    filename?: string,
+  ): Promise<Picto> {
+    if (filename) {
+      return this.pictoRepository.editPicto(id, editPictoDto, user, filename);
+    } else {
+      return this.pictoRepository.editPicto(id, editPictoDto, user);
     }
   }
 

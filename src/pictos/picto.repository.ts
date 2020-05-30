@@ -8,6 +8,9 @@ import {
 import { CreatePictoDto } from './dto/create-picto.dto';
 import { User } from 'src/auth/user.entity';
 import { Collection } from './collection.entity';
+import { EditPictoDto } from './dto/edit-picto.dto';
+import { unlink } from 'fs';
+
 @EntityRepository(Picto)
 export class PictoRepository extends Repository<Picto> {
   private logger = new Logger('PictoRepository');
@@ -52,5 +55,47 @@ export class PictoRepository extends Repository<Picto> {
     delete picto.user;
     delete picto.collection;
     return picto;
+  }
+
+  async editPicto(
+    id: number,
+    editPictoDto: EditPictoDto,
+    user: User,
+    filename?: string,
+  ): Promise<Picto> {
+    const { speech, meaning, folder, fatherId } = editPictoDto;
+    const picto = await this.findOne({
+      id: id,
+      userId: user.id,
+    });
+    if (picto) {
+      picto.speech = speech;
+      picto.meaning = meaning;
+      picto.folder = folder;
+      picto.fatherId = fatherId;
+      if (filename) {
+        unlink('./files/' + picto.path, () => {
+          this.logger.verbose(
+            `Collection of path "${picto.path}" successfully deleted`,
+          );
+        });
+        picto.path = filename;
+      }
+      try {
+        await picto.save();
+      } catch (error) {
+        this.logger.error(
+          `Failed to create a collection for user "${
+            user.username
+          }". Data: ${JSON.stringify(editPictoDto)}`,
+          error.stack,
+        );
+        throw new InternalServerErrorException();
+      }
+      delete picto.user;
+      return picto;
+    } else {
+      throw new NotFoundException('Edited Collection does not exist');
+    }
   }
 }

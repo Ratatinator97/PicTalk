@@ -5,6 +5,7 @@ import { User } from '../auth/user.entity';
 import { Collection } from './collection.entity';
 import { CreateCollectionDto } from './dto/create-collection.dto';
 import { unlink } from 'fs';
+import { EditCollectionDto } from './dto/edit-collection.dto';
 @Injectable()
 export class CollectionService {
   constructor(
@@ -37,7 +38,27 @@ export class CollectionService {
       filename,
     );
   }
-
+  async editCollection(
+    id: number,
+    editCollectionDto: EditCollectionDto,
+    user: User,
+    filename?: string,
+  ): Promise<Collection> {
+    if (filename) {
+      return this.collectionRepository.editCollection(
+        id,
+        editCollectionDto,
+        user,
+        filename,
+      );
+    } else {
+      return this.collectionRepository.editCollection(
+        id,
+        editCollectionDto,
+        user,
+      );
+    }
+  }
   async deleteCollection(id: number, user: User): Promise<void> {
     const collection = await this.collectionRepository.findOne({
       id: id,
