@@ -51,7 +51,7 @@ describe('UserRepository', () => {
     });
   });
 
-  describe('validateUserPassword', () => {
+  describe('validationPassword', () => {
     let user;
 
     beforeEach(() => {
@@ -65,7 +65,7 @@ describe('UserRepository', () => {
       userRepository.findOne.mockResolvedValue(user);
       user.validatePassword.mockResolvedValue(true);
 
-      const result = await userRepository.validateUserPassword(
+      const result = await userRepository.validationPassword(
         mockCredentialsDto,
       );
       expect(result).toEqual('TestUsername');
@@ -73,7 +73,7 @@ describe('UserRepository', () => {
 
     it('returns null as user cannot be found', async () => {
       userRepository.findOne.mockResolvedValue(null);
-      const result = await userRepository.validateUserPassword(
+      const result = await userRepository.validationPassword(
         mockCredentialsDto,
       );
       expect(user.validatePassword).not.toHaveBeenCalled();
@@ -83,7 +83,7 @@ describe('UserRepository', () => {
     it('returns null as password is invalid', async () => {
       userRepository.findOne.mockResolvedValue(user);
       user.validatePassword.mockResolvedValue(false);
-      const result = await userRepository.validateUserPassword(
+      const result = await userRepository.validationPassword(
         mockCredentialsDto,
       );
       expect(user.validatePassword).toHaveBeenCalled();

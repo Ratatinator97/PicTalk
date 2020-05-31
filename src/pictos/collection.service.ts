@@ -21,7 +21,6 @@ export class CollectionService {
     if (collections.length !== 0) {
       collections.map(collection => {
         delete collection.pictos;
-        return collection;
       });
     }
     return collections;
