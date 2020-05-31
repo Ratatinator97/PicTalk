@@ -10,7 +10,6 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { ResetPasswordDto } from './dto/reset-password.dto';
 import { EditUserDto } from './dto/edit-user.dto';
 import sgMail = require('@sendgrid/mail');
-import { getMaxListeners } from 'cluster';
 sgMail.setApiKey(process.env.SENDGRID_KEY);
 require('dotenv').config();
 
@@ -28,7 +27,7 @@ export class UserRepository extends Repository<User> {
       phone,
     } = createUserDto;
 
-    const user = new User();
+    const user = this.create();
     user.username = username;
     user.salt = await bcrypt.genSalt();
     user.password = await this.hashPassword(password, user.salt);
