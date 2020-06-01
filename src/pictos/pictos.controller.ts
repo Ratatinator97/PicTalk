@@ -33,7 +33,7 @@ import { EditPictoDto } from './dto/edit-picto.dto';
 @Controller('pictalk')
 @UseGuards(AuthGuard())
 export class PictosController {
-  private logger = new Logger('TasksController');
+  private logger = new Logger('PictosController');
   constructor(
     private pictoService: PictoService,
     private collectionService: CollectionService,
@@ -201,7 +201,7 @@ export class PictosController {
     @GetUser() user: User,
   ): Promise<Picto> {
     this.logger.verbose(
-      `User "${user.username}" editing a collection. Data: ${JSON.stringify(
+      `User "${user.username}" editing picto. Data: ${JSON.stringify(
         editPictoDto,
       )} of "${user.username}"`,
     );

@@ -26,10 +26,14 @@ export class PictoService {
     user: User,
     collection: Collection,
   ): Promise<Picto[]> {
-    const found = await this.pictoRepository.find({
+    const pictos = await this.pictoRepository.find({
       where: { fatherId: id, userId: user.id, collection: collection },
     });
-    return found;
+    await pictos.map(picto => {
+      delete picto.userId;
+      delete picto.id;
+    });
+    return pictos;
   }
 
   async createPicto(

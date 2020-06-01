@@ -10,8 +10,8 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { ResetPasswordDto } from './dto/reset-password.dto';
 import { EditUserDto } from './dto/edit-user.dto';
 import sgMail = require('@sendgrid/mail');
-sgMail.setApiKey(process.env.SENDGRID_KEY);
 require('dotenv').config();
+sgMail.setApiKey(process.env.SENDGRID_KEY);
 
 @EntityRepository(User)
 export class UserRepository extends Repository<User> {

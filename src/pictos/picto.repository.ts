@@ -54,6 +54,8 @@ export class PictoRepository extends Repository<Picto> {
     }
     delete picto.user;
     delete picto.collection;
+    delete picto.userId;
+    delete picto.id;
     return picto;
   }
 

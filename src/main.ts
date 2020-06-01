@@ -13,7 +13,7 @@ async function bootstrap() {
   const logger = new Logger('bootstrap');
   const app = await NestFactory.create(AppModule);
   app.use(helmet());
-  app.use(csurf());
+  //app.use(csurf());
   app.use(
     rateLimit({
       windowMs: 15 * 60 * 1000, // 15 minutes

@@ -21,6 +21,8 @@ export class CollectionService {
     if (collections.length !== 0) {
       collections.map(collection => {
         delete collection.pictos;
+        delete collection.userId;
+        delete collection.id;
       });
     }
     return collections;
