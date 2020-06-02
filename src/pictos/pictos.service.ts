@@ -136,7 +136,7 @@ export class PictoService {
   }
 
   async deleteMultiple(pictos: Picto[]) {
-    pictos.map(picto => {
+    pictos.forEach(picto => {
       unlink('./files/' + picto.path, () => {
         this.logger.verbose(
           `Picto of path "${picto.path}" successfully deleted`,
