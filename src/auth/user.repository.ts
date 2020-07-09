@@ -28,15 +28,20 @@ export class UserRepository extends Repository<User> {
       gender,
       phone,
     } = createUserDto;
+    this.logger.verbose(`user is created`);
+    this.logger.verbose(
+      `User "${username}" creating a new Picto. Data: ${JSON.stringify(
+        createUserDto,
+      )}`,
+    );
     this.logger.verbose(`signUp function is being started...`);
+    const user = this.create();
+    this.logger.verbose(`user is created`);
     try {
-      const user = this.create();
+      user.username = username;
     } catch (e) {
-      const user = this.create();
-      this.logger.verbose(`error during creation :${e}`);
+      this.logger.verbose(`username is inserted: FAIL`);
     }
-    /*
-    user.username = username;
     try {
       user.salt = await bcrypt.genSalt();
     } catch (e) {
@@ -86,7 +91,6 @@ export class UserRepository extends Repository<User> {
         throw new InternalServerErrorException(error);
       }
     }
-    */
   }
 
   async validationPassword(
