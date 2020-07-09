@@ -30,7 +30,6 @@ export class UserRepository extends Repository<User> {
     } = createUserDto;
 
     const user = this.create();
-    user.salt = await bcrypt.genSalt();
     user.username = username;
     user.salt = await bcrypt.genSalt();
     user.password = await this.hashPassword(password, user.salt);
