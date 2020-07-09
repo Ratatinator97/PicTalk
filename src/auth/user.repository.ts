@@ -42,16 +42,21 @@ export class UserRepository extends Repository<User> {
     } catch (e) {
       this.logger.verbose(`username is inserted: FAIL`);
     }
+    this.logger.verbose(`username is inserted`);
+
     try {
       user.salt = await bcrypt.genSalt();
     } catch (e) {
       this.logger.verbose(`Error while genSalt ${e}`);
     }
+    this.logger.verbose(`salt is inserted`);
+
     try {
       user.password = await this.hashPassword(password, user.salt);
     } catch (e) {
       this.logger.verbose(`Error while hashPassword ${e}`);
     }
+    this.logger.verbose(`going to put surname`);
 
     user.surname = surname;
     this.logger.verbose(`surname is created`);
