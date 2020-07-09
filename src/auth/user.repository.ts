@@ -4,6 +4,7 @@ import { AuthCredentialsDto } from './dto/auth-credentials.dto';
 import {
   ConflictException,
   InternalServerErrorException,
+  Logger,
 } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -14,6 +15,8 @@ sgMail.setApiKey(process.env.SENDGRID_KEY);
 
 @EntityRepository(User)
 export class UserRepository extends Repository<User> {
+  private logger = new Logger('AuthService');
+
   async signUp(createUserDto: CreateUserDto): Promise<void> {
     const {
       username,
@@ -57,7 +60,8 @@ export class UserRepository extends Repository<User> {
     }
 
     try {
-      console.log('try user save');
+      this.logger.verbose(`User ${user.surname} is being saved !`);
+
       await user.save();
     } catch (error) {
       if (error.code === 23505) {

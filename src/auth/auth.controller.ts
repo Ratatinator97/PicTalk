@@ -5,6 +5,7 @@ import {
   ValidationPipe,
   Get,
   UseGuards,
+  Logger,
 } from '@nestjs/common';
 import { AuthCredentialsDto } from './dto/auth-credentials.dto';
 import { AuthService } from './auth.service';
@@ -17,13 +18,14 @@ import { ResetPasswordDto } from './dto/reset-password.dto';
 
 @Controller('auth')
 export class AuthController {
+  private logger = new Logger('AuthController');
   constructor(private authService: AuthService) {}
 
   @Post('/signup')
   signUp(@Body(ValidationPipe) createUserDto: CreateUserDto): Promise<void> {
-    console.log(createUserDto);
-    console.log('On lance le service');
-
+    this.logger.verbose(
+      `User with Dto: "${createUserDto}" is trying to Sign Up`,
+    );
     return this.authService.signUp(createUserDto);
   }
 
