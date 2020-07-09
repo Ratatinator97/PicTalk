@@ -1,4 +1,4 @@
 {
     "schemaVersion": 2,
-    "imageName": "ratatinator97/pictalk-beta"
+    "dockerfilePath": "./Dockerfile"
 }

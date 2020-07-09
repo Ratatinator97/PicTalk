@@ -19,7 +19,6 @@ export class AuthService {
   ) {}
 
   async signUp(createUserDto: CreateUserDto): Promise<void> {
-    this.logger.verbose(`SignUp request passed to the repository`);
     return this.userRepository.signUp(createUserDto);
   }
 

@@ -33,6 +33,9 @@ export class AuthController {
   signIn(
     @Body(ValidationPipe) authCredentialsDto: AuthCredentialsDto,
   ): Promise<{ accessToken: string }> {
+    this.logger.verbose(
+      `User "${authCredentialsDto.username}" is trying to Sign In`,
+    );
     return this.authService.signIn(authCredentialsDto);
   }
 
@@ -40,12 +43,16 @@ export class AuthController {
   resetPassword(
     @Body(ValidationPipe) resetPasswordDto: ResetPasswordDto,
   ): Promise<void> {
+    this.logger.verbose(
+      `User "${resetPasswordDto.username}" is trying to Reset Password`,
+    );
     return this.authService.resetPassword(resetPasswordDto);
   }
 
   @Get('/details')
   @UseGuards(AuthGuard())
   getUserDetails(@GetUser() user: User): Promise<User> {
+    this.logger.verbose(`User "${user.username}" is trying to get Details`);
     return this.authService.getUserDetails(user);
   }
 
@@ -55,6 +62,7 @@ export class AuthController {
     @GetUser() user: User,
     @Body(ValidationPipe) editUserDto: EditUserDto,
   ): Promise<void> {
+    this.logger.verbose(`User "${user.username}" is trying to modify Details`);
     return this.authService.editUser(user, editUserDto);
   }
 }

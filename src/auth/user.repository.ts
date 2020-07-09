@@ -28,48 +28,16 @@ export class UserRepository extends Repository<User> {
       gender,
       phone,
     } = createUserDto;
-    this.logger.verbose(`user is created`);
-    this.logger.verbose(
-      `User "${username}" creating a new Picto. Data: ${JSON.stringify(
-        createUserDto,
-      )}`,
-    );
-    this.logger.verbose(`signUp function is being started...`);
+
     const user = this.create();
-    this.logger.verbose(`user is created`);
     user.salt = await bcrypt.genSalt();
-    try {
-      user.username = username;
-    } catch (e) {
-      this.logger.verbose(`username is inserted: FAIL`);
-    }
-    this.logger.verbose(`username is inserted`);
-
-    try {
-      user.salt = await bcrypt.genSalt();
-    } catch (e) {
-      this.logger.verbose(`Error while genSalt ${e}`);
-    }
-    this.logger.verbose(`salt is inserted`);
-
-    try {
-      user.password = await this.hashPassword(password, user.salt);
-    } catch (e) {
-      this.logger.verbose(`Error while hashPassword ${e}`);
-    }
-    this.logger.verbose(`going to put surname`);
-
+    user.username = username;
+    user.salt = await bcrypt.genSalt();
+    user.password = await this.hashPassword(password, user.salt);
     user.surname = surname;
-    this.logger.verbose(`surname is created`);
-
     user.name = name;
-    this.logger.verbose(`name is created`);
-
     user.resetPasswordToken = '';
-    this.logger.verbose(`resetPswdToken is created`);
-
     user.resetPasswordExpires = '';
-    this.logger.verbose(`User is created and most of fileds are initialized.`);
 
     if (address) {
       user.address = address;
@@ -91,19 +59,22 @@ export class UserRepository extends Repository<User> {
     } else {
       user.gender = '';
     }
-    this.logger.verbose(`signUp function is being started...`);
 
     try {
-      this.logger.verbose(`User ${user.surname} is being saved !`);
       await user.save();
     } catch (error) {
       if (error.code === 23505) {
         //Duplicate Username
         throw new ConflictException('Username already exists');
       } else {
+        this.logger.verbose(
+          `Problem while saving the User: ${user.surname}, error is : ${error} !`,
+        );
+
         throw new InternalServerErrorException(error);
       }
     }
+    this.logger.verbose(`User ${user.surname} is being saved !`);
   }
 
   async validationPassword(
