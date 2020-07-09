@@ -52,9 +52,16 @@ export class UserRepository extends Repository<User> {
     } catch (e) {
       this.logger.verbose(`Error while hashPassword ${e}`);
     }
+
     user.surname = surname;
+    this.logger.verbose(`surname is created`);
+
     user.name = name;
+    this.logger.verbose(`name is created`);
+
     user.resetPasswordToken = '';
+    this.logger.verbose(`resetPswdToken is created`);
+
     user.resetPasswordExpires = '';
     this.logger.verbose(`User is created and most of fileds are initialized.`);
 
