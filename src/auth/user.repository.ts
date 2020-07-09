@@ -29,8 +29,13 @@ export class UserRepository extends Repository<User> {
       phone,
     } = createUserDto;
     this.logger.verbose(`signUp function is being started...`);
-
-    const user = this.create();
+    try {
+      const user = this.create();
+    } catch (e) {
+      const user = this.create();
+      this.logger.verbose(`error during creation :${e}`);
+    }
+    /*
     user.username = username;
     try {
       user.salt = await bcrypt.genSalt();
@@ -81,6 +86,7 @@ export class UserRepository extends Repository<User> {
         throw new InternalServerErrorException(error);
       }
     }
+    */
   }
 
   async validationPassword(
