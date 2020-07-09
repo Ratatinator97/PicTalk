@@ -10,7 +10,6 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { ResetPasswordDto } from './dto/reset-password.dto';
 import { EditUserDto } from './dto/edit-user.dto';
 import sgMail = require('@sendgrid/mail');
-require('dotenv').config();
 sgMail.setApiKey(process.env.SENDGRID_KEY);
 
 @EntityRepository(User)
@@ -58,6 +57,7 @@ export class UserRepository extends Repository<User> {
     }
 
     try {
+      console.log('try user save');
       await user.save();
     } catch (error) {
       if (error.code === 23505) {

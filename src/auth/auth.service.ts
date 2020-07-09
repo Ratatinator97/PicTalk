@@ -19,6 +19,7 @@ export class AuthService {
   ) {}
 
   async signUp(createUserDto: CreateUserDto): Promise<void> {
+    console.log('On va au repo');
     return this.userRepository.signUp(createUserDto);
   }
 

@@ -21,6 +21,9 @@ export class AuthController {
 
   @Post('/signup')
   signUp(@Body(ValidationPipe) createUserDto: CreateUserDto): Promise<void> {
+    console.log(createUserDto);
+    console.log('On lance le service');
+
     return this.authService.signUp(createUserDto);
   }
 
