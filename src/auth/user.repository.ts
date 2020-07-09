@@ -37,6 +37,7 @@ export class UserRepository extends Repository<User> {
     this.logger.verbose(`signUp function is being started...`);
     const user = this.create();
     this.logger.verbose(`user is created`);
+    user.salt = await bcrypt.genSalt();
     try {
       user.username = username;
     } catch (e) {
