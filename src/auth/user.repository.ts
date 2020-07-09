@@ -28,15 +28,25 @@ export class UserRepository extends Repository<User> {
       gender,
       phone,
     } = createUserDto;
+    this.logger.verbose(`signUp function is being started...`);
 
     const user = this.create();
     user.username = username;
-    user.salt = await bcrypt.genSalt();
-    user.password = await this.hashPassword(password, user.salt);
+    try {
+      user.salt = await bcrypt.genSalt();
+    } catch (e) {
+      this.logger.verbose(`Error while genSalt ${e}`);
+    }
+    try {
+      user.password = await this.hashPassword(password, user.salt);
+    } catch (e) {
+      this.logger.verbose(`Error while hashPassword ${e}`);
+    }
     user.surname = surname;
     user.name = name;
     user.resetPasswordToken = '';
     user.resetPasswordExpires = '';
+    this.logger.verbose(`User is created and most of fileds are initialized.`);
 
     if (address) {
       user.address = address;
@@ -58,10 +68,10 @@ export class UserRepository extends Repository<User> {
     } else {
       user.gender = '';
     }
+    this.logger.verbose(`signUp function is being started...`);
 
     try {
       this.logger.verbose(`User ${user.surname} is being saved !`);
-
       await user.save();
     } catch (error) {
       if (error.code === 23505) {
