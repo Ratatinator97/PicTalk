@@ -24,7 +24,7 @@ export class PictoRepository extends Repository<Picto> {
     const { speech, meaning, folder, fatherId } = createPictoDto;
     const picto = new Picto();
 
-    if (fatherId !== 0) {
+    if (fatherId != 0) {
       const found: Picto = await this.findOne({
         where: { id: fatherId, userId: user.id },
       });

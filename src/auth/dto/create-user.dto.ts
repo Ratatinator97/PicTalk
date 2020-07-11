@@ -49,7 +49,7 @@ export class CreateUserDto {
 
   @IsOptional()
   @IsString()
-  @Matches(/^male$|^female$/g, { message: 'Gender has wrong values' })
+  @Matches(/^(male|female)$/g, { message: 'Gender has wrong values' })
   gender: string;
 
   @IsOptional()
