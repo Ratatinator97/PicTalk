@@ -7,12 +7,15 @@ import { CollectionRepository } from './collection.repository';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { PictoRepository } from './picto.repository';
 import { AuthModule } from 'src/auth/auth.module';
+import { minioClientConfig } from '../config/minio.config';
+import { MinioModule } from 'nestjs-minio-client';
 
 @Module({
   imports: [
     MulterModule.register({
       dest: './files',
     }),
+    MinioModule.register(minioClientConfig),
     TypeOrmModule.forFeature([CollectionRepository]),
     TypeOrmModule.forFeature([PictoRepository]),
     AuthModule,

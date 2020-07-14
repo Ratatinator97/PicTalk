@@ -17,6 +17,7 @@ export class PictoRepository extends Repository<Picto> {
   constructor(private readonly minioClient: MinioService) {
     super();
   }
+  private readonly minio2Client: MinioService;
   private logger = new Logger('PictoRepository');
 
   async createPicto(
