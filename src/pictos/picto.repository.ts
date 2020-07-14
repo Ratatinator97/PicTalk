@@ -55,7 +55,6 @@ export class PictoRepository extends Repository<Picto> {
     delete picto.user;
     delete picto.collection;
     delete picto.userId;
-    delete picto.id;
     return picto;
   }
 
@@ -95,6 +94,8 @@ export class PictoRepository extends Repository<Picto> {
         throw new InternalServerErrorException();
       }
       delete picto.user;
+      delete picto.collection;
+      delete picto.userId;
       return picto;
     } else {
       throw new NotFoundException('Edited Collection does not exist');

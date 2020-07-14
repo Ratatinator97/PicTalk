@@ -31,7 +31,6 @@ export class PictoService {
     });
     await pictos.map(picto => {
       delete picto.userId;
-      delete picto.id;
     });
     return pictos;
   }
@@ -137,7 +136,7 @@ export class PictoService {
 
   async deleteMultiple(pictos: Picto[]) {
     pictos.forEach(picto => {
-      unlink('./tmp/' + picto.path, () => {
+      unlink('./files/' + picto.path, () => {
         this.logger.verbose(
           `Picto of path "${picto.path}" successfully deleted`,
         );
