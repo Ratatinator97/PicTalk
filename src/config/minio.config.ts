@@ -1,5 +1,5 @@
 export const minioClientConfig = {
-  endPoint: 'minio.apps.asidiras.dev',
+  endPoint: 'srv-captain--minio',
   port: 9000,
   useSSL: true,
   accessKey: process.env.MINIO_AK,
