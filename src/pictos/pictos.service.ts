@@ -12,14 +12,12 @@ import { CreatePictoDto } from './dto/create-picto.dto';
 import { Collection } from './collection.entity';
 import { unlink } from 'fs';
 import { EditPictoDto } from './dto/edit-picto.dto';
-import { MinioService } from 'nestjs-minio-client';
 
 @Injectable()
 export class PictoService {
   constructor(
     @InjectRepository(PictoRepository)
     private pictoRepository: PictoRepository,
-    private readonly minioClient: MinioService,
   ) {}
   private logger = new Logger('PictoController');
 
@@ -44,30 +42,12 @@ export class PictoService {
     filename: string,
     collection: Collection,
   ): Promise<Picto> {
-    const ret = await this.pictoRepository.createPicto(
+    return this.pictoRepository.createPicto(
       createPictoDto,
       user,
       filename,
       collection,
     );
-    if (ret.speech) {
-      const exists = await this.minioClient.client.bucketExists('pictalk');
-      if (exists) {
-        this.logger.log(`Bucket exists !`);
-        const file = '/tmp/' + filename;
-        const metaData = {};
-        this.minioClient.client.fPutObject(
-          'pictalk',
-          filename,
-          file,
-          metaData,
-          function(err, etag) {
-            this.logger.verbose(`${err}, ${etag}`); // err should be null
-          },
-        );
-      }
-    }
-    return ret;
   }
 
   async deletePicto(id: number, user: User): Promise<void> {
@@ -82,7 +62,7 @@ export class PictoService {
   }
 
   async deletePictoRecursive(picto: Picto, user: User): Promise<any[]> {
-    unlink('./tmp/' + picto.path, () => {
+    unlink('./files/' + picto.path, () => {
       this.logger.verbose(`Picto of path "${picto.path}" successfully deleted`);
     });
     const pictos: Picto[] = await this.pictoRepository.find({
