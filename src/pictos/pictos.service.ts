@@ -12,12 +12,14 @@ import { CreatePictoDto } from './dto/create-picto.dto';
 import { Collection } from './collection.entity';
 import { unlink } from 'fs';
 import { EditPictoDto } from './dto/edit-picto.dto';
+import { MinioService } from 'nestjs-minio-client';
 
 @Injectable()
 export class PictoService {
   constructor(
     @InjectRepository(PictoRepository)
     private pictoRepository: PictoRepository,
+    private readonly minioClient: MinioService,
   ) {}
   private logger = new Logger('PictoController');
 
@@ -62,7 +64,7 @@ export class PictoService {
   }
 
   async deletePictoRecursive(picto: Picto, user: User): Promise<any[]> {
-    unlink('./files/' + picto.path, () => {
+    unlink('./tmp/' + picto.path, () => {
       this.logger.verbose(`Picto of path "${picto.path}" successfully deleted`);
     });
     const pictos: Picto[] = await this.pictoRepository.find({
@@ -137,7 +139,7 @@ export class PictoService {
 
   async deleteMultiple(pictos: Picto[]) {
     pictos.forEach(picto => {
-      unlink('./files/' + picto.path, () => {
+      unlink('./tmp/' + picto.path, () => {
         this.logger.verbose(
           `Picto of path "${picto.path}" successfully deleted`,
         );
