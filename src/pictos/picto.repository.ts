@@ -58,6 +58,7 @@ export class PictoRepository extends Repository<Picto> {
         throw new InternalServerErrorException(err);
       }
       if (exists) {
+        this.logger.verbose(`Premier callback OK`);
         const file = './tmp/' + filename;
         const metaData = {};
         this.minioClient.client.fPutObject(
