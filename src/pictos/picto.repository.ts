@@ -14,7 +14,6 @@ import { MinioService } from 'nestjs-minio-client';
 
 @EntityRepository(Picto)
 export class PictoRepository extends Repository<Picto> {
-  private readonly minioClient: MinioService;
   private logger = new Logger('PictoRepository');
 
   async createPicto(
@@ -53,31 +52,7 @@ export class PictoRepository extends Repository<Picto> {
       );
       throw new InternalServerErrorException();
     }
-    this.minioClient.client.bucketExists('pictalk', function(err, exists) {
-      if (err) {
-        throw new InternalServerErrorException(err);
-      }
-      if (exists) {
-        this.logger.verbose(`Premier callback OK`);
-        const file = './tmp/' + filename;
-        const metaData = {};
-        this.minioClient.client.fPutObject(
-          'pictalk',
-          filename,
-          file,
-          metaData,
-          function(err, etag) {
-            if (err) {
-              throw new InternalServerErrorException(err);
-            } else {
-              this.logger.verbose(
-                `Image with name: ${filename} uploaded successfully to minio`,
-              );
-            }
-          },
-        );
-      }
-    });
+
     delete picto.user;
     delete picto.collection;
     delete picto.userId;

@@ -44,6 +44,10 @@ export class PictoService {
     filename: string,
     collection: Collection,
   ): Promise<Picto> {
+    const exists = await this.minioClient.client.bucketExists('pictalk');
+    if (exists) {
+      this.logger.log(`Bucket exists !`);
+    }
     return this.pictoRepository.createPicto(
       createPictoDto,
       user,
