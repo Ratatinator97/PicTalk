@@ -4,9 +4,13 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { typeOrmConfig } from './config/typeorm.config';
 import { AuthModule } from './auth/auth.module';
 import { PictosModule } from './pictos/pictos.module';
+import { MinioModule } from 'nestjs-minio-client';
+import { minioClientConfig } from './config/minio.config';
+
 @Module({
   imports: [
     TypeOrmModule.forRoot(typeOrmConfig),
+    MinioModule.register(minioClientConfig),
     AuthModule,
     PictosModule,
     CacheModule.register(),
