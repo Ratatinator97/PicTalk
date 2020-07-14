@@ -10,11 +10,9 @@ import { User } from 'src/auth/user.entity';
 import { Collection } from './collection.entity';
 import { EditPictoDto } from './dto/edit-picto.dto';
 import { unlink } from 'fs';
-import { MinioService } from 'nestjs-minio-client';
 
 @EntityRepository(Picto)
 export class PictoRepository extends Repository<Picto> {
-  private minioClient: MinioService;
   private logger = new Logger('PictoRepository');
 
   async createPicto(
@@ -23,10 +21,6 @@ export class PictoRepository extends Repository<Picto> {
     filename: string,
     collection: Collection,
   ) {
-    const exists = await this.minioClient.client.bucketExists('pictalk');
-    if (exists) {
-      this.logger.log(`Bucket exists !`);
-    }
     const { speech, meaning, folder, fatherId } = createPictoDto;
     const picto = new Picto();
     if (fatherId != 0) {

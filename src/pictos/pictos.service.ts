@@ -44,16 +44,30 @@ export class PictoService {
     filename: string,
     collection: Collection,
   ): Promise<Picto> {
-    const exists = await this.minioClient.client.bucketExists('pictalk');
-    if (exists) {
-      this.logger.log(`Bucket exists !`);
-    }
-    return this.pictoRepository.createPicto(
+    const ret = await this.pictoRepository.createPicto(
       createPictoDto,
       user,
       filename,
       collection,
     );
+    if (ret.speech) {
+      const exists = await this.minioClient.client.bucketExists('pictalk');
+      if (exists) {
+        this.logger.log(`Bucket exists !`);
+        const file = '/tmp/' + filename;
+        const metaData = {};
+        this.minioClient.client.fPutObject(
+          'pictalk',
+          filename,
+          file,
+          metaData,
+          function(err, etag) {
+            this.logger.verbose(`${err}, ${etag}`); // err should be null
+          },
+        );
+      }
+    }
+    return ret;
   }
 
   async deletePicto(id: number, user: User): Promise<void> {
