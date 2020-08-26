@@ -22,7 +22,7 @@ export class CollectionService {
       collections.map(collection => {
         delete collection.pictos;
         delete collection.userId;
-        delete collection.id;
+        
       });
     }
     return collections;
