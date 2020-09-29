@@ -9,9 +9,11 @@ import { randomBytes } from 'crypto';
 import { ResetPasswordDto } from './dto/reset-password.dto';
 import { CreateUserDto } from './dto/create-user.dto';
 import { EditUserDto } from './dto/edit-user.dto';
+import * as config from 'config';
 @Injectable()
 export class AuthService {
   private logger = new Logger('AuthService');
+
   constructor(
     @InjectRepository(User)
     private userRepository: UserRepository,
@@ -24,7 +26,9 @@ export class AuthService {
 
   async signIn(
     authCredentialsDto: AuthCredentialsDto,
-  ): Promise<{ accessToken: string }> {
+  ): Promise<{ accessToken: string; expiresIn: string }> {
+    const jwtConfig = config.get('jwt');
+    const expiresIn = jwtConfig.expiresIn;
     const username = await this.userRepository.validationPassword(
       authCredentialsDto,
     );
@@ -38,7 +42,7 @@ export class AuthService {
     this.logger.debug(
       `Generated JWT Token with payload ${JSON.stringify(payload)}`,
     );
-    return { accessToken };
+    return { accessToken, expiresIn };
   }
 
   async resetPassword(resetPasswordDto: ResetPasswordDto): Promise<void> {

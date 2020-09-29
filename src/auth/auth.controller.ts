@@ -32,7 +32,7 @@ export class AuthController {
   @Post('/signin')
   signIn(
     @Body(ValidationPipe) authCredentialsDto: AuthCredentialsDto,
-  ): Promise<{ accessToken: string }> {
+  ): Promise<{ accessToken: string; expiresIn: string }> {
     this.logger.verbose(
       `User "${authCredentialsDto.username}" is trying to Sign In`,
     );
