@@ -9,10 +9,9 @@ require('dotenv').config();
 
 async function bootstrap() {
   const serverConfig = config.get('server');
-
   const logger = new Logger('bootstrap');
   const app = await NestFactory.create(AppModule);
-  //app.use(helmet());
+  app.use(helmet());
   //app.use(csurf());
   app.use(
     rateLimit({
@@ -21,10 +20,9 @@ async function bootstrap() {
     }),
   );
   console.log('Node environment is :', process.env.NODE_ENV);
-  if (process.env.NODE_ENV === 'development') {
-    console.log('Enabled CORS');
-    app.enableCors();
-  }
+
+  console.log('Enabled CORS');
+  app.enableCors();
 
   const port = process.env.PORT || serverConfig.port;
   await app.listen(port);
