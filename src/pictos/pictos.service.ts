@@ -31,7 +31,6 @@ export class PictoService {
     });
     await pictos.map(picto => {
       delete picto.userId;
-      delete picto.id;
     });
     return pictos;
   }

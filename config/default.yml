@@ -1,10 +1,10 @@
 server:
-  port: 3000
+  port: 3001
 
 db:
-  type: 'postgres'
+  type: "postgres"
   port: 5432
-  database: 'pictalk'
+  database: "pictalk"
 
 jwt:
   expiresIn: 3600

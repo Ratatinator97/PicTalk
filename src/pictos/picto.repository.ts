@@ -23,8 +23,7 @@ export class PictoRepository extends Repository<Picto> {
   ) {
     const { speech, meaning, folder, fatherId } = createPictoDto;
     const picto = new Picto();
-
-    if (fatherId !== 0) {
+    if (fatherId != 0) {
       const found: Picto = await this.findOne({
         where: { id: fatherId, userId: user.id },
       });
@@ -52,10 +51,10 @@ export class PictoRepository extends Repository<Picto> {
       );
       throw new InternalServerErrorException();
     }
+
     delete picto.user;
     delete picto.collection;
     delete picto.userId;
-    delete picto.id;
     return picto;
   }
 
@@ -95,6 +94,8 @@ export class PictoRepository extends Repository<Picto> {
         throw new InternalServerErrorException();
       }
       delete picto.user;
+      delete picto.collection;
+      delete picto.userId;
       return picto;
     } else {
       throw new NotFoundException('Edited Collection does not exist');

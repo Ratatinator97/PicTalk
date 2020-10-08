@@ -39,6 +39,8 @@ export class CollectionRepository extends Repository<Collection> {
       throw new InternalServerErrorException();
     }
     delete collection.user;
+    delete collection.userId;
+    delete collection.pictos;
     return collection;
   }
   async editCollection(
@@ -77,7 +79,6 @@ export class CollectionRepository extends Repository<Collection> {
       delete collection.user;
       delete collection.userId;
       delete collection.pictos;
-      delete collection.id;
       return collection;
     } else {
       throw new NotFoundException('Edited Collection does not exist');

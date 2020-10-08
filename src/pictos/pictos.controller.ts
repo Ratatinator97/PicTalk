@@ -3,6 +3,7 @@ import {
   UseGuards,
   Logger,
   Get,
+  Res,
   Param,
   ParseIntPipe,
   Post,
@@ -31,7 +32,6 @@ import { EditCollectionDto } from './dto/edit-collection.dto';
 import { EditPictoDto } from './dto/edit-picto.dto';
 
 @Controller('pictalk')
-@UseGuards(AuthGuard())
 export class PictosController {
   private logger = new Logger('PictosController');
   constructor(
@@ -40,12 +40,14 @@ export class PictosController {
   ) {}
 
   @Get('/collection')
+  @UseGuards(AuthGuard())
   getUserCollections(@GetUser() user: User): Promise<Collection[]> {
     this.logger.verbose(`User "${user.username}" retrieving collections`);
     return this.collectionService.getUserCollections(user);
   }
 
   @Get('/picto/:id/:collectionId')
+  @UseGuards(AuthGuard())
   async getPictos(
     @Param('id', ParseIntPipe) id: number,
     @Param('collectionId', ParseIntPipe) collectionId: number,
@@ -62,6 +64,7 @@ export class PictosController {
   }
 
   @Post('/picto/:collectionId')
+  @UseGuards(AuthGuard())
   @UsePipes(ValidationPipe)
   @UseInterceptors(
     FileInterceptor('image', {
@@ -116,6 +119,7 @@ export class PictosController {
   }
 
   @Post('/collection')
+  @UseGuards(AuthGuard())
   @UsePipes(ValidationPipe)
   @UseInterceptors(
     FileInterceptor('image', {
@@ -150,6 +154,7 @@ export class PictosController {
   }
 
   @Put('/collection/:id')
+  @UseGuards(AuthGuard())
   @UsePipes(ValidationPipe)
   @UseInterceptors(
     FileInterceptor('image', {
@@ -184,6 +189,7 @@ export class PictosController {
   }
 
   @Put('/picto/:id/:collectionId')
+  @UseGuards(AuthGuard())
   @UsePipes(ValidationPipe)
   @UseInterceptors(
     FileInterceptor('image', {
@@ -213,6 +219,7 @@ export class PictosController {
   }
 
   @Delete('/collection/:id')
+  @UseGuards(AuthGuard())
   async deleteCollection(
     @Param('id', ParseIntPipe) id: number,
     @GetUser() user: User,
@@ -230,10 +237,15 @@ export class PictosController {
   }
 
   @Delete('/picto/:id')
+  @UseGuards(AuthGuard())
   deletePicto(
     @Param('id', ParseIntPipe) id: number,
     @GetUser() user: User,
   ): Promise<void> {
     return this.pictoService.deletePicto(id, user);
+  }
+  @Get(':imgpath')
+  seeUploadedFile(@Param('imgpath') image, @Res() res) {
+    return res.sendFile(image, { root: './files' });
   }
 }
