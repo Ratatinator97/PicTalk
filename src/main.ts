@@ -22,13 +22,7 @@ async function bootstrap() {
   console.log('Node environment is :', process.env.NODE_ENV);
 
   console.log('Enabled CORS');
-  app.enableCors({
-    origin: '*',
-    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-    preflightContinue: false,
-    optionsSuccessStatus: 204,
-  });
-
+  app.enableCors();
   const port = process.env.PORT || serverConfig.port;
   await app.listen(port);
   logger.log(`Application listening on port ${port}`);
