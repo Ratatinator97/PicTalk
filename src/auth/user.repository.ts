@@ -16,18 +16,9 @@ sgMail.setApiKey(process.env.SENDGRID_KEY);
 @EntityRepository(User)
 export class UserRepository extends Repository<User> {
   private logger = new Logger('AuthService');
-
+  s;
   async signUp(createUserDto: CreateUserDto): Promise<void> {
-    const {
-      username,
-      password,
-      address,
-      age,
-      name,
-      surname,
-      gender,
-      phone,
-    } = createUserDto;
+    const { username, password, name, surname, language } = createUserDto;
 
     const user = this.create();
     user.username = username;
@@ -38,25 +29,10 @@ export class UserRepository extends Repository<User> {
     user.resetPasswordToken = '';
     user.resetPasswordExpires = '';
 
-    if (address) {
-      user.address = address;
+    if (language) {
+      user.language = language;
     } else {
-      user.address = '';
-    }
-    if (phone) {
-      user.phone = phone;
-    } else {
-      user.phone = '';
-    }
-    if (age) {
-      user.age = age;
-    } else {
-      user.age = '';
-    }
-    if (gender) {
-      user.gender = gender;
-    } else {
-      user.gender = '';
+      user.language = '';
     }
 
     try {
@@ -129,15 +105,7 @@ export class UserRepository extends Repository<User> {
     return user;
   }
   async editUser(user: User, editUserDto: EditUserDto): Promise<void> {
-    const {
-      username,
-      name,
-      surname,
-      address,
-      phone,
-      gender,
-      age,
-    } = editUserDto;
+    const { username, name, surname, language, password } = editUserDto;
     if (username) {
       user.username = username;
     }
@@ -147,17 +115,12 @@ export class UserRepository extends Repository<User> {
     if (surname) {
       user.surname = surname;
     }
-    if (gender) {
-      user.gender = gender;
+    if (language) {
+      user.language = language;
     }
-    if (address) {
-      user.address = address;
-    }
-    if (phone) {
-      user.phone = phone;
-    }
-    if (age) {
-      user.age = age;
+    if (password) {
+      user.salt = await bcrypt.genSalt();
+      user.password = await this.hashPassword(password, user.salt);
     }
     try {
       await user.save();

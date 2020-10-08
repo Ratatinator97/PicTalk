@@ -4,6 +4,7 @@ import {
   Body,
   ValidationPipe,
   Get,
+  Put,
   UseGuards,
   Logger,
 } from '@nestjs/common';
@@ -56,7 +57,7 @@ export class AuthController {
     return this.authService.getUserDetails(user);
   }
 
-  @Post('/details')
+  @Put('/details')
   @UseGuards(AuthGuard())
   editUser(
     @GetUser() user: User,

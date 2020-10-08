@@ -26,16 +26,7 @@ export class User extends BaseEntity {
   surname: string;
 
   @Column()
-  address: string;
-
-  @Column()
-  age: string;
-
-  @Column()
-  gender: string;
-
-  @Column()
-  phone: string;
+  language: string;
 
   @Column()
   password: string;
