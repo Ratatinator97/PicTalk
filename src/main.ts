@@ -22,7 +22,9 @@ async function bootstrap() {
   console.log('Node environment is :', process.env.NODE_ENV);
 
   console.log('Enabled CORS');
-  app.enableCors();
+  app.enableCors({
+    origin: 'https://www.pictalk.xyz',
+  });
   const port = process.env.PORT || serverConfig.port;
   await app.listen(port);
   logger.log(`Application listening on port ${port}`);
