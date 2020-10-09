@@ -24,6 +24,7 @@ async function bootstrap() {
   console.log('Enabled CORS');
   app.enableCors({
     origin: 'https://www.pictalk.xyz',
+    methods: 'GET,PUT,POST,DELETE,OPTIONS',
   });
   const port = process.env.PORT || serverConfig.port;
   await app.listen(port);
