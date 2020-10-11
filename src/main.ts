@@ -20,12 +20,16 @@ async function bootstrap() {
     }),
   );
   console.log('Node environment is :', process.env.NODE_ENV);
-
-  console.log('Enabled CORS');
-  app.enableCors({
-    origin: 'https://www.pictalk.xyz',
-    methods: 'GET,PUT,POST,DELETE,OPTIONS',
-  });
+  if (process.env.NODE_ENV === 'development') {
+    console.log('Enabled open CORS');
+    app.enableCors();
+  } else {
+    console.log('Enabled production CORS');
+    app.enableCors({
+      origin: 'https://www.pictalk.xyz',
+      methods: 'GET,PUT,POST,DELETE,OPTIONS',
+    });
+  }
   const port = process.env.PORT || serverConfig.port;
   await app.listen(port);
   logger.log(`Application listening on port ${port}`);
