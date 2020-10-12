@@ -18,14 +18,13 @@ export class UserRepository extends Repository<User> {
   private logger = new Logger('AuthService');
   s;
   async signUp(createUserDto: CreateUserDto): Promise<void> {
-    const { username, password, name, surname, language } = createUserDto;
+    const { username, password, language } = createUserDto;
 
     const user = this.create();
     user.username = username;
     user.salt = await bcrypt.genSalt();
     user.password = await this.hashPassword(password, user.salt);
-    user.surname = surname;
-    user.name = name;
+    
     user.resetPasswordToken = '';
     user.resetPasswordExpires = '';
 
@@ -43,13 +42,13 @@ export class UserRepository extends Repository<User> {
         throw new ConflictException('Username already exists');
       } else {
         this.logger.verbose(
-          `Problem while saving the User: ${user.surname}, error is : ${error} !`,
+          `Problem while saving the User: ${user.username}, error is : ${error} !`,
         );
 
         throw new InternalServerErrorException(error);
       }
     }
-    this.logger.verbose(`User ${user.surname} is being saved !`);
+    this.logger.verbose(`User ${user.username} is being saved !`);
   }
 
   async validationPassword(
@@ -105,15 +104,9 @@ export class UserRepository extends Repository<User> {
     return user;
   }
   async editUser(user: User, editUserDto: EditUserDto): Promise<void> {
-    const { username, name, surname, language, password } = editUserDto;
+    const { username, language, password } = editUserDto;
     if (username) {
       user.username = username;
-    }
-    if (name) {
-      user.name = name;
-    }
-    if (surname) {
-      user.surname = surname;
     }
     if (language) {
       user.language = language;

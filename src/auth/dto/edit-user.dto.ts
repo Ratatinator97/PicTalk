@@ -19,18 +19,6 @@ export class EditUserDto {
 
   @IsOptional()
   @IsString()
-  @MinLength(1)
-  @MaxLength(40)
-  name: string;
-
-  @IsOptional()
-  @IsString()
-  @MinLength(1)
-  @MaxLength(40)
-  surname: string;
-
-  @IsOptional()
-  @IsString()
   language: string;
 
   @IsOptional()

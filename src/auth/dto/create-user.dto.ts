@@ -24,16 +24,6 @@ export class CreateUserDto {
   })
   password: string;
 
-  @IsString()
-  @MinLength(1)
-  @MaxLength(40)
-  name: string;
-
-  @IsString()
-  @MinLength(1)
-  @MaxLength(40)
-  surname: string;
-
   @IsOptional()
   @IsString()
   language: string;
