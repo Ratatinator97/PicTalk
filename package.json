@@ -27,7 +27,7 @@
     "@nestjs/passport": "^7.1.0",
     "@nestjs/platform-express": "^7.4.4",
     "@nestjs/typeorm": "^7.1.4",
-    "@sendgrid/mail": "^7.2.6",
+    "@sendgrid/mail": "^7.3.0",
     "bcrypt": "^5.0.0",
     "cache-manager": "^3.4.0",
     "class-transformer": "^0.3.1",
