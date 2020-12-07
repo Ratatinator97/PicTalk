@@ -11,12 +11,12 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { ResetPasswordDto } from './dto/reset-password.dto';
 import { EditUserDto } from './dto/edit-user.dto';
 import sgMail = require('@sendgrid/mail');
+import { ChangePasswordDto } from './dto/change-password.dto';
 sgMail.setApiKey(process.env.SENDGRID_KEY);
 
 @EntityRepository(User)
 export class UserRepository extends Repository<User> {
   private logger = new Logger('AuthService');
-  s;
   async signUp(createUserDto: CreateUserDto): Promise<void> {
     const { username, password, language } = createUserDto;
 
@@ -44,9 +44,17 @@ export class UserRepository extends Repository<User> {
         this.logger.verbose(
           `Problem while saving the User: ${user.username}, error is : ${error} !`,
         );
-
         throw new InternalServerErrorException(error);
       }
+    }
+    try {
+      sgMail.send({
+        from: 'pictalk.mail@gmail.com',
+        to: user.username,
+        templateId: 'd-33dea01340e5496691a5741588e2d9f7',
+      });
+    } catch (error) {
+      throw new Error(error);
     }
     this.logger.verbose(`User ${user.username} is being saved !`);
   }
@@ -64,7 +72,6 @@ export class UserRepository extends Repository<User> {
       return null;
     }
   }
-
   async resetPassword(
     resetPasswordDto: ResetPasswordDto,
     resetTokenValue: string,
@@ -72,6 +79,9 @@ export class UserRepository extends Repository<User> {
   ): Promise<void> {
     const { username } = resetPasswordDto;
     const user = await this.findOne({ username });
+    if(!user){
+      return;
+    }
 
     user.resetPasswordToken = resetTokenValue;
     user.resetPasswordExpires = resetTokenExpiration;
@@ -85,15 +95,18 @@ export class UserRepository extends Repository<User> {
     try {
       sgMail.send({
         from: 'pictalk.mail@gmail.com',
-        to: 'asidiras.csi@gmail.com',
-        subject: 'Your Password Reset Demand',
-        text: 'This is a test email',
-        html: '<p>This is a test email</p>',
+        to: user.username,
+        templateId: 'd-d68b41c356ba493eac635229b678744e',
+        dynamicTemplateData: {
+          token: resetTokenValue,
+        },
       });
     } catch (error) {
       throw new Error(error);
     }
+    return;
   }
+
   async getUserDetails(user: User): Promise<User> {
     delete user.password;
     delete user.salt;
@@ -120,6 +133,34 @@ export class UserRepository extends Repository<User> {
     } catch (error) {
       throw new InternalServerErrorException(error);
     }
+  }
+  async changePassword(changePasswordDto:ChangePasswordDto, token:string):Promise<void>{
+    const { password } = changePasswordDto;
+    const user = await this.findOne({where: {resetPasswordToken: token}});
+    if(!user){
+      return;
+    } 
+    if(Number(user.resetPasswordExpires) > Date.now()){
+      user.salt = await bcrypt.genSalt();
+      user.password = await this.hashPassword(password, user.salt);
+      user.resetPasswordToken = "";
+      user.resetPasswordExpires= "";
+      try {
+        await user.save();
+      } catch (error) {
+        throw new InternalServerErrorException(error);
+      }
+    }
+    try {
+      sgMail.send({
+        from: 'pictalk.mail@gmail.com',
+        to: user.username,
+        templateId: 'd-55a93fc67fa346939b6507a6f5cc477f',
+      });
+    } catch (error) {
+      throw new Error(error);
+    }
+    return;
   }
 
   private async hashPassword(password: string, salt: string): Promise<string> {

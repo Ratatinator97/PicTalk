@@ -10,6 +10,7 @@ import { ResetPasswordDto } from './dto/reset-password.dto';
 import { CreateUserDto } from './dto/create-user.dto';
 import { EditUserDto } from './dto/edit-user.dto';
 import * as config from 'config';
+import { ChangePasswordDto } from './dto/change-password.dto';
 @Injectable()
 export class AuthService {
   private logger = new Logger('AuthService');
@@ -59,6 +60,10 @@ export class AuthService {
   }
   async getUserDetails(user: User): Promise<User> {
     return this.userRepository.getUserDetails(user);
+  }
+
+  async changePassword(changePasswordDto:ChangePasswordDto, token:string):Promise<void>{
+    return this.userRepository.changePassword(changePasswordDto, token);
   }
 
   //

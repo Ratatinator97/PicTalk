@@ -7,6 +7,8 @@ import {
   Put,
   UseGuards,
   Logger,
+  Param,
+  ParseIntPipe,
 } from '@nestjs/common';
 import { AuthCredentialsDto } from './dto/auth-credentials.dto';
 import { AuthService } from './auth.service';
@@ -16,6 +18,7 @@ import { GetUser } from './get-user.decorator';
 import { EditUserDto } from './dto/edit-user.dto';
 import { AuthGuard } from '@nestjs/passport';
 import { ResetPasswordDto } from './dto/reset-password.dto';
+import { ChangePasswordDto } from './dto/change-password.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -48,6 +51,16 @@ export class AuthController {
       `User "${resetPasswordDto.username}" is trying to Reset Password`,
     );
     return this.authService.resetPassword(resetPasswordDto);
+  }
+  @Post('/changePassword/:token')
+  changePassword(
+    @Body(ValidationPipe) changePasswordDto: ChangePasswordDto,
+    @Param('token') token: string,
+  ):Promise<void> {
+    this.logger.verbose(
+      `${token} is being used !`,
+    );
+    return this.authService.changePassword(changePasswordDto, token);
   }
 
   @Get('/details')
