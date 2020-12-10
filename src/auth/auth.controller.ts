@@ -7,8 +7,7 @@ import {
   Put,
   UseGuards,
   Logger,
-  Param,
-  ParseIntPipe,
+  Param
 } from '@nestjs/common';
 import { AuthCredentialsDto } from './dto/auth-credentials.dto';
 import { AuthService } from './auth.service';
