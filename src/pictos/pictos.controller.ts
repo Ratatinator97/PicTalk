@@ -15,6 +15,7 @@ import {
   InternalServerErrorException,
   Delete,
   Put,
+  Header
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { GetUser } from 'src/auth/get-user.decorator';
@@ -245,6 +246,7 @@ export class PictosController {
     return this.pictoService.deletePicto(id, user);
   }
   @Get(':imgpath')
+  @Header('Cache-Control', 'max-age=31536000')
   seeUploadedFile(@Param('imgpath') image, @Res() res) {
     return res.sendFile(image, { root: './files' });
   }

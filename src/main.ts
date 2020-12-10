@@ -4,6 +4,8 @@ import { Logger } from '@nestjs/common';
 import * as config from 'config';
 import * as helmet from 'helmet';
 import * as rateLimit from 'express-rate-limit';
+import * as compression from 'compression';
+// somewhere in your initialization file
 
 async function bootstrap() {
   const serverConfig = config.get('server');
@@ -16,6 +18,7 @@ async function bootstrap() {
       max: 1000, // limit each IP to 100 requests per windowMs
     }),
   );
+  app.use(compression());
   console.log('Node environment is :', process.env.NODE_ENV);
   if (process.env.NODE_ENV === 'development') {
     console.log('Enabled open CORS');
