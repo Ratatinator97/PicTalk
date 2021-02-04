@@ -40,6 +40,14 @@ export class PictosController {
     private collectionService: CollectionService,
   ) {}
 
+  @Get('/allPictos')
+  @UseGuards(AuthGuard())
+  getAllPictos(
+    @GetUser() user: User,
+  ): Promise<Picto[]>{
+    this.logger.verbose(`User "${user.username}" getting all pictos`);
+    return this.pictoService.getAllPictos(user);
+  }
   @Get('/collection')
   @UseGuards(AuthGuard())
   getUserCollections(@GetUser() user: User): Promise<Collection[]> {
@@ -248,6 +256,10 @@ export class PictosController {
   @Get(':imgpath')
   @Header('Cache-Control', 'max-age=31536000')
   seeUploadedFile(@Param('imgpath') image, @Res() res) {
+    this.logger.verbose(
+      `Get on ${image}`,
+    );
     return res.sendFile(image, { root: './files' });
   }
+  
 }

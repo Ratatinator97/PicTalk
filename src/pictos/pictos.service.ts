@@ -31,6 +31,7 @@ export class PictoService {
     });
     await pictos.map(picto => {
       delete picto.userId;
+      Object.assign(picto, {collectionId: collection.id});
     });
     return pictos;
   }
@@ -142,5 +143,19 @@ export class PictoService {
         );
       });
     });
+  }
+  async getAllPictos(user:User):Promise<Picto[]>{
+    const pictos: Picto[] = await this.pictoRepository.find({
+      where: { userId: user.id },
+      relations: ["collection"],
+    });
+    await pictos.map(picto => {
+      delete picto.userId;
+      Object.assign(picto, {collectionId: picto.collection.id});
+      delete picto.collection;
+    });
+    return pictos;
+
+
   }
 }
