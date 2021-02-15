@@ -44,4 +44,7 @@ export class Picto extends BaseEntity {
 
   @Column()
   userId: number;
+
+  @Column()
+  starred: boolean;
 }

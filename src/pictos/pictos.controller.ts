@@ -65,11 +65,17 @@ export class PictosController {
     this.logger.verbose(
       `User "${user.username}" retrieving childs pictos of "${id}" of "${user.username}"`,
     );
-    const collection: Collection = await this.collectionService.getCollection(
-      collectionId,
-      user,
-    );
-    return this.pictoService.getPictos(id, user, collection);
+
+    return this.pictoService.getPictos(id, user, collectionId);
+  }
+
+  @Put('/picto/:id/star')
+  @UseGuards(AuthGuard())
+  async alternateStar(
+    @Param('id', ParseIntPipe) id:number,
+    @GetUser() user:User
+  ): Promise<void>{
+    return this.pictoService.alternateStar(id, user);
   }
 
   @Post('/picto/:collectionId')

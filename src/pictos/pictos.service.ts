@@ -24,14 +24,16 @@ export class PictoService {
   async getPictos(
     id: number,
     user: User,
-    collection: Collection,
+    collectionId: number,
   ): Promise<Picto[]> {
     const pictos = await this.pictoRepository.find({
-      where: { fatherId: id, userId: user.id, collection: collection },
+      where: { fatherId: id, userId: user.id, collection: collectionId },
+      relations: ["collection"]
     });
     await pictos.map(picto => {
       delete picto.userId;
-      Object.assign(picto, {collectionId: collection.id});
+      delete picto.collection;
+      Object.assign(picto, {collectionId: collectionId});
     });
     return pictos;
   }
@@ -133,6 +135,9 @@ export class PictoService {
     } catch (error) {
       throw new NotFoundException();
     }
+  }
+  async alternateStar(id:number, user:User):Promise<void>{
+    return this.pictoRepository.alternateStar(id, user);
   }
 
   async deleteMultiple(pictos: Picto[]) {

@@ -26,7 +26,7 @@ export class Collection extends BaseEntity {
   @OneToMany(
     type => Picto,
     picto => picto.collection,
-    { eager: true },
+    { eager: false },
   )
   pictos: Picto[];
 

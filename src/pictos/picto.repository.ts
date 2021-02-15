@@ -20,7 +20,7 @@ export class PictoRepository extends Repository<Picto> {
     user: User,
     filename: string,
     collection: Collection,
-  ) {
+  ):Promise<Picto> {
     const { speech, meaning, folder, fatherId } = createPictoDto;
     const picto = new Picto();
     if (fatherId != 0) {
@@ -39,7 +39,7 @@ export class PictoRepository extends Repository<Picto> {
     picto.path = filename;
     picto.user = user;
     picto.collection = collection;
-
+    picto.starred = false;
     try {
       await picto.save();
     } catch (error) {
@@ -77,7 +77,7 @@ export class PictoRepository extends Repository<Picto> {
       if (filename) {
         unlink('./files/' + picto.path, () => {
           this.logger.verbose(
-            `Collection of path "${picto.path}" successfully deleted`,
+            `Pictogram of path "${picto.path}" successfully deleted`,
           );
         });
         picto.path = filename;
@@ -86,7 +86,7 @@ export class PictoRepository extends Repository<Picto> {
         await picto.save();
       } catch (error) {
         this.logger.error(
-          `Failed to create a collection for user "${
+          `Failed to create a pictogram for user "${
             user.username
           }". Data: ${JSON.stringify(editPictoDto)}`,
           error.stack,
@@ -98,7 +98,27 @@ export class PictoRepository extends Repository<Picto> {
       delete picto.userId;
       return picto;
     } else {
-      throw new NotFoundException('Edited Collection does not exist');
+      throw new NotFoundException('Edited Pictogram does not exist');
+    }
+  }
+  async alternateStar(id:number, user:User):Promise<void>{
+    const picto = await this.findOne({id: id, userId:user.id});
+    if(picto){
+      picto.starred ? picto.starred = false : picto.starred = true;
+      try {
+        await picto.save();
+        return;
+      } catch (error) {
+        this.logger.error(
+          `Failed to edit star of a pictogram for user "${
+            user.username
+          }". Data: ${JSON.stringify(picto.id)}`,
+          error.stack,
+        );
+        throw new InternalServerErrorException();
+      }
+    } else {
+      throw new NotFoundException('Starred pictogram does not exist');
     }
   }
 }
