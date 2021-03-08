@@ -11,22 +11,22 @@ async function bootstrap() {
   const serverConfig = config.get('server');
   const logger = new Logger('bootstrap');
   const app = await NestFactory.create(AppModule);
-  app.use(helmet());
-  app.use(
-    rateLimit({
-      windowMs: 15 * 60 * 1000, // 15 minutes
-      max: 2000, // limit each IP to 100 requests per windowMs
-    }),
-  );
   app.use(compression());
   console.log('Node environment is :', process.env.NODE_ENV);
   if (process.env.NODE_ENV === 'development') {
     console.log('Enabled open CORS');
     app.enableCors();
   } else {
+    app.use(helmet());
+    app.use(
+      rateLimit({
+        windowMs: 15 * 60 * 1000, // 15 minutes
+        max: 2000,
+      }),
+    );
     console.log('Enabled production CORS');
     app.enableCors({
-      origin: 'https://www.pictalk.xyz',
+      origin: ['https://www.pictalk.xyz','https://beta.pictalk.xyz'],
       methods: 'GET,PUT,POST,DELETE,OPTIONS',
     });
   }
