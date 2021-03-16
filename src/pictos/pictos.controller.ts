@@ -259,7 +259,7 @@ export class PictosController {
   ): Promise<void> {
     return this.pictoService.deletePicto(id, user);
   }
-  @Get(':imgpath')
+  @Get('/image/:imgpath')
   @Header('Cache-Control', 'max-age=31536000')
   seeUploadedFile(@Param('imgpath') image, @Res() res) {
     this.logger.verbose(
