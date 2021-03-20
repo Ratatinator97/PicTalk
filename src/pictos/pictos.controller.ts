@@ -267,5 +267,4 @@ export class PictosController {
     );
     return res.sendFile(image, { root: './files' });
   }
-  
 }
