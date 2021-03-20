@@ -21,7 +21,7 @@ async function bootstrap() {
     app.use(
       rateLimit({
         windowMs: 15 * 60 * 1000, // 15 minutes
-        max: 10000,
+        max: 1000,
       }),
     );
     console.log('Enabled production CORS');
