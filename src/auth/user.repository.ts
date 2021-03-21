@@ -49,7 +49,7 @@ export class UserRepository extends Repository<User> {
     }
     try {
       sgMail.send({
-        from: 'pictalk.mail@gmail.com',
+        from: 'alex@pictalk.xyz',
         to: user.username,
         templateId: 'd-33dea01340e5496691a5741588e2d9f7',
       });
@@ -93,7 +93,7 @@ export class UserRepository extends Repository<User> {
 
     try {
       sgMail.send({
-        from: 'pictalk.mail@gmail.com',
+        from: 'alex@pictalk.xyz',
         to: user.username,
         templateId: 'd-d68b41c356ba493eac635229b678744e',
         dynamicTemplateData: {
@@ -152,7 +152,7 @@ export class UserRepository extends Repository<User> {
     }
     try {
       sgMail.send({
-        from: 'pictalk.mail@gmail.com',
+        from: 'alex@pictalk.xyz',
         to: user.username,
         templateId: 'd-55a93fc67fa346939b6507a6f5cc477f',
       });
