@@ -31,12 +31,14 @@ import { imageFileFilter, editFileName } from './file-upload.utils';
 import { diskStorage } from 'multer';
 import { EditCollectionDto } from './dto/edit-collection.dto';
 import { EditPictoDto } from './dto/edit-picto.dto';
+import { NoDuplicatasService } from './noDuplicatas.service';
 @Controller('pictalk')
 export class PictosController {
   private logger = new Logger('PictosController');
   constructor(
     private pictoService: PictoService,
     private collectionService: CollectionService,
+    private noDuplicatasService: NoDuplicatasService
   ) {}
 
   @Get('/allPictos')
@@ -93,7 +95,7 @@ export class PictosController {
   @UseInterceptors(
     FileInterceptor('image', {
       storage: diskStorage({
-        destination: './files',
+        destination: './tmp',
         filename: editFileName,
       }),
       fileFilter: imageFileFilter,
@@ -126,10 +128,12 @@ export class PictosController {
           collectionId,
           user,
         );
+        // TODO remove unnecessary call
+        const filename:string = await this.noDuplicatasService.noDuplicatas(file.filename);
         return this.pictoService.createPicto(
           createPictoDto,
           user,
-          file.filename,
+          filename,
           collection,
         );
       } else {
@@ -148,13 +152,13 @@ export class PictosController {
   @UseInterceptors(
     FileInterceptor('image', {
       storage: diskStorage({
-        destination: './files',
+        destination: './tmp',
         filename: editFileName,
       }),
       fileFilter: imageFileFilter,
     }),
   )
-  createCollection(
+  async createCollection(
     @UploadedFile() file,
     @Body() createCollectionDto: CreateCollectionDto,
     @GetUser() user: User,
@@ -167,10 +171,11 @@ export class PictosController {
       )} of "${user.username}"`,
     );
     if (file) {
+      const filename:string = await this.noDuplicatasService.noDuplicatas(file.filename);
       return this.collectionService.createCollection(
         createCollectionDto,
         user,
-        file.filename,
+        filename,
       );
     } else {
       throw new InternalServerErrorException('File needed');
@@ -183,13 +188,13 @@ export class PictosController {
   @UseInterceptors(
     FileInterceptor('image', {
       storage: diskStorage({
-        destination: './files',
+        destination: './tmp',
         filename: editFileName,
       }),
       fileFilter: imageFileFilter,
     }),
   )
-  editCollection(
+  async editCollection(
     @Param('id', ParseIntPipe) id: number,
     @UploadedFile() file,
     @Body() editCollectionDto: EditCollectionDto,
@@ -201,11 +206,12 @@ export class PictosController {
       )} of "${user.username}"`,
     );
     if (file) {
+      const filename:string = await this.noDuplicatasService.noDuplicatas(file.filename);
       return this.collectionService.editCollection(
         id,
         editCollectionDto,
         user,
-        file.filename,
+        filename,
       );
     } else {
       return this.collectionService.editCollection(id, editCollectionDto, user);
@@ -218,13 +224,13 @@ export class PictosController {
   @UseInterceptors(
     FileInterceptor('image', {
       storage: diskStorage({
-        destination: './files',
+        destination: './tmp',
         filename: editFileName,
       }),
       fileFilter: imageFileFilter,
     }),
   )
-  editPicto(
+  async editPicto(
     @Param('id', ParseIntPipe) id: number,
     @UploadedFile() file,
     @Body() editPictoDto: EditPictoDto,
@@ -236,7 +242,8 @@ export class PictosController {
       )} of "${user.username}"`,
     );
     if (file) {
-      return this.pictoService.editPicto(id, editPictoDto, user, file.filename);
+      const filename:string = await this.noDuplicatasService.noDuplicatas(file.filename);
+      return this.pictoService.editPicto(id, editPictoDto, user, filename);
     } else {
       return this.pictoService.editPicto(id, editPictoDto, user);
     }
