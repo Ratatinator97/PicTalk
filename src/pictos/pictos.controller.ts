@@ -26,12 +26,11 @@ import { CollectionService } from './collection.service';
 import { CreatePictoDto } from './dto/create-picto.dto';
 import { CreateCollectionDto } from './dto/create-collection.dto';
 import { Collection } from './collection.entity';
-import { FileInterceptor } from '@nestjs/platform-express';
+import { FileInterceptor, MulterModule } from '@nestjs/platform-express';
 import { imageFileFilter, editFileName } from './file-upload.utils';
 import { diskStorage } from 'multer';
 import { EditCollectionDto } from './dto/edit-collection.dto';
 import { EditPictoDto } from './dto/edit-picto.dto';
-
 @Controller('pictalk')
 export class PictosController {
   private logger = new Logger('PictosController');
@@ -78,6 +77,16 @@ export class PictosController {
     return this.pictoService.alternateStar(id, user);
   }
 
+  @Put('/collection/:id/star')
+  @UseGuards(AuthGuard())
+  async alternateStarCollection(
+    @Param('id', ParseIntPipe) id:number,
+    @GetUser() user:User
+  ): Promise<void>{
+    return this.collectionService.alternateStar(id, user);
+  }
+
+
   @Post('/picto/:collectionId')
   @UseGuards(AuthGuard())
   @UsePipes(ValidationPipe)
@@ -94,7 +103,7 @@ export class PictosController {
     @Param('collectionId', ParseIntPipe) collectionId: number,
     @Body() createPictoDto: CreatePictoDto,
     @GetUser() user: User,
-    @UploadedFile() file,
+    @UploadedFile() file:Express.Multer.File ,
   ): Promise<Picto> {
     if (file) {
       let isFolder: number;

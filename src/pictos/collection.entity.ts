@@ -38,5 +38,8 @@ export class Collection extends BaseEntity {
   user: User;
 
   @Column()
+  starred: boolean;
+
+  @Column()
   userId: number;
 }

@@ -85,6 +85,10 @@ export class CollectionService {
     return;
   }
 
+  async alternateStar(id:number, user:User):Promise<void>{
+    return this.collectionRepository.alternateStar(id, user);
+  }
+
   async getCollection(id: number, user: User): Promise<Collection> {
     const collection = await this.collectionRepository.findOne({
       where: { userId: user.id, id },
