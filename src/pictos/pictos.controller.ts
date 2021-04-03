@@ -124,17 +124,14 @@ export class PictosController {
             createPictoDto,
           )} of "${user.username}"`,
         );
-        const collection: Collection = await this.collectionService.getCollection(
-          collectionId,
-          user,
-        );
+      
         // TODO remove unnecessary call
         const filename:string = await this.noDuplicatasService.noDuplicatas(file.filename);
         return this.pictoService.createPicto(
           createPictoDto,
           user,
           filename,
-          collection,
+          collectionId,
         );
       } else {
         throw new InternalServerErrorException(

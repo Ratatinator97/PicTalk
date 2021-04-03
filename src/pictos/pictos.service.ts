@@ -42,13 +42,13 @@ export class PictoService {
     createPictoDto: CreatePictoDto,
     user: User,
     filename: string,
-    collection: Collection,
+    collectionId: number,
   ): Promise<Picto> {
     return this.pictoRepository.createPicto(
       createPictoDto,
       user,
       filename,
-      collection,
+      collectionId,
     );
   }
 
