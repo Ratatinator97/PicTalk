@@ -6,6 +6,7 @@ import { Collection } from './collection.entity';
 import { CreateCollectionDto } from './dto/create-collection.dto';
 import { unlink } from 'fs';
 import { EditCollectionDto } from './dto/edit-collection.dto';
+import { StarterCollectionDto } from 'starterPack/starterCollection.dto';
 @Injectable()
 export class CollectionService {
   constructor(
@@ -109,4 +110,25 @@ export class CollectionService {
     }
     return true;
   }
+
+  async createStarterCollections(user:User):Promise<Collection[]>{
+    var starterCollections:StarterCollectionDto[] = require("./../../starterPack/startingPackCollection.json");
+    return new Promise((resolve, reject) => {
+      let createdCollections:Collection[];
+      starterCollections.forEach( async (starterCollection) => {
+        try {
+          let createdCollection:Collection = await this.createCollection(
+            { name: starterCollection.name, color: starterCollection.color}, 
+            user, 
+            starterCollection.path, 
+          );
+          createdCollections.push(createdCollection);
+        } catch(err){
+          reject(err);
+        }
+      });
+      resolve(createdCollections);
+    }); 
+  }
+
 }

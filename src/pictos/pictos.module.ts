@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { MulterModule } from '@nestjs/platform-express';
 import { PictosController } from './pictos.controller';
 import { PictoService } from './pictos.service';
@@ -16,7 +16,7 @@ import { NoDuplicatasService } from './noDuplicatas.service';
     }),
     TypeOrmModule.forFeature([CollectionRepository]),
     TypeOrmModule.forFeature([PictoRepository]),
-    AuthModule,
+    forwardRef(() => AuthModule),
   ],
   controllers: [PictosController],
   providers: [PictoService, CollectionService, NoDuplicatasService],

@@ -64,8 +64,6 @@ export class NoDuplicatasService {
                 resolve(hash1);
             }
         })));
-        console.log(hash1);
-        console.log(hash2);
         if(hash1 != hash2){
             return false;
         } else {

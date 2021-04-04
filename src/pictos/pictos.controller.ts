@@ -124,8 +124,6 @@ export class PictosController {
             createPictoDto,
           )} of "${user.username}"`,
         );
-      
-        // TODO remove unnecessary call
         const filename:string = await this.noDuplicatasService.noDuplicatas(file.filename);
         return this.pictoService.createPicto(
           createPictoDto,

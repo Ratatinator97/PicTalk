@@ -12,7 +12,8 @@ import { CreatePictoDto } from './dto/create-picto.dto';
 import { Collection } from './collection.entity';
 import { unlink } from 'fs';
 import { EditPictoDto } from './dto/edit-picto.dto';
-
+import { readFileSync } from 'node:fs';
+import { StarterPictoDto } from 'starterPack/starterPicto.dto';
 @Injectable()
 export class PictoService {
   constructor(
@@ -160,7 +161,65 @@ export class PictoService {
       delete picto.collection;
     });
     return pictos;
+  }
+
+  async createStarterPackPictosForCollection(user:User, collections:Collection[]):Promise<void>{
+    var pictograms:StarterPictoDto[] = require("./../../starterPack/startingPackPictos.json");
+    collections.forEach(async collection => {
+      let collectionPictos:StarterPictoDto[] = pictograms.filter(pictogram => collection.name == pictogram.collectionName);
+      await this.createStarterPackPictos(user, collection.id, collectionPictos);
+    });
+  }
+
+  async createStarterPackPictos(user:User, collectionId:number, pictograms:StarterPictoDto[]):Promise<void>{
+    const rootPictograms:Picto[] = await this.createRootPictos(user, collectionId, pictograms);
+    let nonRootPictograms:StarterPictoDto[] = await this.getNonRootPictograms(pictograms);
+    const meaningRootPictos:string[] = rootPictograms.map((rootPicto) => rootPicto.meaning);
+    while(nonRootPictograms.length != 0){
+      nonRootPictograms.forEach(async (picto,index) => {
+        let rootFather:string = meaningRootPictos.filter((meaningRootPicto) => meaningRootPicto == picto.fatherMeaning)[0]
+        if(rootFather){
+          let fatherPicto:Picto = rootPictograms.find((rootPicto) => rootPicto.meaning == rootFather)[0]
+          await this.createPicto({meaning: picto.meaning, speech: picto.speech, folder: picto.folder, fatherId: fatherPicto.id}, user, picto.path, collectionId);
+        } else {
+          let fatherPicto:Picto = await this.findFatherId(picto, nonRootPictograms);
+          if(fatherPicto){
+            await this.createPicto({meaning: picto.meaning, speech: picto.speech, folder: picto.folder, fatherId: fatherPicto.id}, user, picto.path, collectionId);
+            nonRootPictograms.splice(index);
+          }
+        }
+      });
+    }
+  }
+
+  async getNonRootPictograms(pictograms:any[]):Promise<any>{
+    return pictograms.filter((pictogram) => pictogram.fatherId != "0");
+  }
 
 
+  async findFatherId(pictoToInsert, createdPictograms):Promise<Picto>{
+    return createdPictograms.filter((pictogram) => {
+      pictogram.meaning == pictoToInsert.fatherId
+    });
+  }
+
+  async createRootPictos(user:User, collectionId:number, pictograms:StarterPictoDto[]):Promise<Picto[]>{
+    return new Promise((resolve, reject) => {
+      let rootPictograms:Picto[];
+      pictograms.filter((pictogram) => pictogram.fatherMeaning == "0").forEach( async (pictogram) => {
+        try {
+          let picto:Picto = await await this.createPicto(
+            { speech: pictogram.speech, meaning: pictogram.meaning, folder: pictogram.folder, fatherId: 0}, 
+            user, 
+            pictogram.path, 
+            collectionId
+          );
+          rootPictograms.push(picto);
+        } catch(err){
+          reject(err);
+        }
+      });
+      resolve(rootPictograms);
+    });  
   }
 }

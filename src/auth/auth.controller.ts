@@ -7,7 +7,9 @@ import {
   Put,
   UseGuards,
   Logger,
-  Param
+  Param,
+  Inject,
+  forwardRef
 } from '@nestjs/common';
 import { AuthCredentialsDto } from './dto/auth-credentials.dto';
 import { AuthService } from './auth.service';
