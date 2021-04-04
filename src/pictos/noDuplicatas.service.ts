@@ -26,9 +26,11 @@ export class NoDuplicatasService {
         const isDuplicata:boolean = await this.CheckIfDuplicate(newImage, similarFiles[0]);
         this.logger.debug(`${isDuplicata}`);
         if(!isDuplicata){
+            this.logger.log(`${newImage} is being moved to Files`);
             this.moveTmpToFiles(newImage);
             return newImage;
         } else {
+            this.logger.log(`${newImage} is being deleted`);
             this.deleteTmpFile(newImage);
             return similarFiles[0];
         }
