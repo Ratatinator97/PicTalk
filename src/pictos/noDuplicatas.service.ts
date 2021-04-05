@@ -19,7 +19,7 @@ export class NoDuplicatasService {
         const similarFiles:string[] = files.filter((file) => file.startsWith(newImage.split('-')[0]));
         
         if(similarFiles.length == 0){
-            this.logger.log(`Not image with the same name exists : ${newImage} is being moved to Files`);
+            this.logger.log(`No image with the same name exists : ${newImage} is being moved to Files`);
             this.moveTmpToFiles(newImage);
             return newImage;   
         }
@@ -79,7 +79,7 @@ export class NoDuplicatasService {
         this.logger.debug(`Moving file: ${filename}`);
         rename("./tmp/"+filename,"./files/"+filename, (err)=> {
             if(err){
-                throw new NotFoundException(`Couldn't find file: ${filename}`);
+                throw new NotFoundException(`Couldn't find file: ${filename}, Error is : ${err}`);
             }
             return;
         })
@@ -88,7 +88,7 @@ export class NoDuplicatasService {
         this.logger.debug(`Deleting file: ${filename}`);
         unlink("./tmp/"+filename, (err) => {
             if(err){
-                throw new InternalServerErrorException(`Couldn't find ${filename}`);
+                throw new InternalServerErrorException(`Couldn't find ${filename}, Error is : ${err}`);
             }
             return;
         });
