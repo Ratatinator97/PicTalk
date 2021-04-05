@@ -7,7 +7,6 @@ import {
 } from '@nestjs/common';
 import { CreatePictoDto } from './dto/create-picto.dto';
 import { User } from 'src/auth/user.entity';
-import { Collection } from './collection.entity';
 import { EditPictoDto } from './dto/edit-picto.dto';
 import { unlink } from 'fs';
 
@@ -19,7 +18,7 @@ export class PictoRepository extends Repository<Picto> {
     createPictoDto: CreatePictoDto,
     user: User,
     filename: string,
-    collection: Collection,
+    collectionId: number,
   ):Promise<Picto> {
     const { speech, meaning, folder, fatherId } = createPictoDto;
     const picto = new Picto();
@@ -38,7 +37,7 @@ export class PictoRepository extends Repository<Picto> {
     picto.fatherId = fatherId;
     picto.path = filename;
     picto.user = user;
-    picto.collection = collection;
+    picto.collection = { id: collectionId } as any;
     picto.starred = false;
     try {
       await picto.save();

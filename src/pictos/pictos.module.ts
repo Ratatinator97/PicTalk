@@ -7,6 +7,7 @@ import { CollectionRepository } from './collection.repository';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { PictoRepository } from './picto.repository';
 import { AuthModule } from 'src/auth/auth.module';
+import { NoDuplicatasService } from './noDuplicatas.service';
 
 @Module({
   imports: [
@@ -18,6 +19,6 @@ import { AuthModule } from 'src/auth/auth.module';
     AuthModule,
   ],
   controllers: [PictosController],
-  providers: [PictoService, CollectionService],
+  providers: [PictoService, CollectionService, NoDuplicatasService],
 })
 export class PictosModule {}

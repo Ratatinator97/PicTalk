@@ -26,7 +26,7 @@ export class CollectionRepository extends Repository<Collection> {
     collection.color = color;
     collection.user = user;
     collection.path = filename;
-
+    collection.starred = false;
     try {
       await collection.save();
     } catch (error) {
@@ -82,6 +82,26 @@ export class CollectionRepository extends Repository<Collection> {
       return collection;
     } else {
       throw new NotFoundException('Edited Collection does not exist');
+    }
+  }
+  async alternateStar(id:number, user:User):Promise<void>{
+    const collection = await this.findOne({id: id, userId:user.id});
+    if(collection){
+      collection.starred ? collection.starred = false : collection.starred = true;
+      try {
+        await collection.save();
+        return;
+      } catch (error) {
+        this.logger.error(
+          `Failed to edit star of a pictogram for user "${
+            user.username
+          }". Data: ${JSON.stringify(collection.id)}`,
+          error.stack,
+        );
+        throw new InternalServerErrorException();
+      }
+    } else {
+      throw new NotFoundException('Starred collection does not exist');
     }
   }
 }
