@@ -1,11 +1,9 @@
-import { ForbiddenException, Injectable, InternalServerErrorException, Logger, NotFoundException } from "@nestjs/common";
-import { readdir, readdirSync, rename, statSync, unlink } from "fs";
+import { Injectable, InternalServerErrorException, Logger, NotFoundException } from "@nestjs/common";
+import { readdirSync, rename, statSync, unlink } from "fs";
 import { extname } from "path"
 import * as sizeOf from "image-size";
 import { ISizeCalculationResult } from "image-size/dist/types/interface";
 import {imageHash } from "image-hash";
-import { resolve } from "node:path";
-import { rejects } from "node:assert";
 @Injectable()
 export class NoDuplicatasService {
     constructor() {}
@@ -21,16 +19,18 @@ export class NoDuplicatasService {
         const similarFiles:string[] = files.filter((file) => file.startsWith(newImage.split('-')[0]));
         
         if(similarFiles.length == 0){
+            this.logger.log(`Not image with the same name exists : ${newImage} is being moved to Files`);
+            this.moveTmpToFiles(newImage);
             return newImage;   
         }
         const isDuplicata:boolean = await this.CheckIfDuplicate(newImage, similarFiles[0]);
         this.logger.debug(`${isDuplicata}`);
         if(!isDuplicata){
-            this.logger.log(`${newImage} is being moved to Files`);
+            this.logger.log(`${newImage} is being moved to Files after checks`);
             this.moveTmpToFiles(newImage);
             return newImage;
         } else {
-            this.logger.log(`${newImage} is being deleted`);
+            this.logger.log(`${newImage} is being deleted after checks`);
             this.deleteTmpFile(newImage);
             return similarFiles[0];
         }
