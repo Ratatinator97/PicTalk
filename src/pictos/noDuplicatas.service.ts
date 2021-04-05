@@ -1,9 +1,10 @@
 import { Injectable, InternalServerErrorException, Logger, NotFoundException } from "@nestjs/common";
-import { readdirSync, rename, statSync, unlink } from "fs";
+import { readdirSync, statSync, unlink } from "fs";
 import { extname } from "path"
 import * as sizeOf from "image-size";
 import { ISizeCalculationResult } from "image-size/dist/types/interface";
 import {imageHash } from "image-hash";
+import { copyFile } from "node:fs";
 @Injectable()
 export class NoDuplicatasService {
     constructor() {}
@@ -77,7 +78,7 @@ export class NoDuplicatasService {
         
     private async moveTmpToFiles(filename:string):Promise<void>{
         this.logger.debug(`Moving file: ${filename}`);
-        rename("./tmp/"+filename,"./files/"+filename, (err)=> {
+        copyFile("./tmp/"+filename,"./files/"+filename, (err)=> {
             if(err){
                 throw new NotFoundException(`Couldn't find file: ${filename}, Error is : ${err}`);
             }
