@@ -21,7 +21,7 @@ export class NoDuplicatasService {
         if(similarFiles.length == 0){
             this.logger.log(`No image with the same name exists : ${newImage} is being moved to Files`);
             this.moveTmpToFiles(newImage);
-            return newImage;   
+            return newImage;
         }
         const isDuplicata:boolean = await this.CheckIfDuplicate(newImage, similarFiles[0]);
         this.logger.debug(`${isDuplicata}`);

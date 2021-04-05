@@ -7,7 +7,6 @@ import {
 } from '@nestjs/common';
 import { CreatePictoDto } from './dto/create-picto.dto';
 import { User } from 'src/auth/user.entity';
-import { Collection } from './collection.entity';
 import { EditPictoDto } from './dto/edit-picto.dto';
 import { unlink } from 'fs';
 

@@ -26,7 +26,7 @@ import { CollectionService } from './collection.service';
 import { CreatePictoDto } from './dto/create-picto.dto';
 import { CreateCollectionDto } from './dto/create-collection.dto';
 import { Collection } from './collection.entity';
-import { FileInterceptor, MulterModule } from '@nestjs/platform-express';
+import { FileInterceptor } from '@nestjs/platform-express';
 import { imageFileFilter, editFileName } from './file-upload.utils';
 import { diskStorage } from 'multer';
 import { EditCollectionDto } from './dto/edit-collection.dto';
