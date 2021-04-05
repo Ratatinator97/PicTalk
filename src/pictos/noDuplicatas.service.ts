@@ -1,10 +1,9 @@
 import { Injectable, InternalServerErrorException, Logger, NotFoundException } from "@nestjs/common";
-import { readdirSync, statSync, unlink } from "fs";
+import { readdirSync, statSync, unlink, copyFile } from "fs";
 import { extname } from "path"
 import * as sizeOf from "image-size";
 import { ISizeCalculationResult } from "image-size/dist/types/interface";
 import {imageHash } from "image-hash";
-import { copyFile } from "node:fs";
 @Injectable()
 export class NoDuplicatasService {
     constructor() {}
