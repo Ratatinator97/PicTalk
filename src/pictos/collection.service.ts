@@ -6,13 +6,14 @@ import { Collection } from './collection.entity';
 import { CreateCollectionDto } from './dto/create-collection.dto';
 import { unlink } from 'fs';
 import { EditCollectionDto } from './dto/edit-collection.dto';
-import { StarterCollectionDto } from 'starterPack/starterCollection.dto';
+import { StarterCollectionDto } from './dto/starterCollection.dto';
+var starterCollections: StarterCollectionDto[] = require("./starterPack/startingPackCollection.json");
 @Injectable()
 export class CollectionService {
   constructor(
     @InjectRepository(CollectionRepository)
     private collectionRepository: CollectionRepository,
-  ) {}
+  ) { }
   private logger = new Logger('TasksController');
 
   async getUserCollections(user: User): Promise<Collection[]> {
@@ -23,7 +24,7 @@ export class CollectionService {
       collections.map(collection => {
         delete collection.pictos;
         delete collection.userId;
-        
+
       });
     }
     return collections;
@@ -86,7 +87,7 @@ export class CollectionService {
     return;
   }
 
-  async alternateStar(id:number, user:User):Promise<void>{
+  async alternateStar(id: number, user: User): Promise<void> {
     return this.collectionRepository.alternateStar(id, user);
   }
 
@@ -111,24 +112,18 @@ export class CollectionService {
     return true;
   }
 
-  async createStarterCollections(user:User):Promise<Collection[]>{
-    var starterCollections:StarterCollectionDto[] = require("./../../starterPack/startingPackCollection.json");
-    return new Promise((resolve, reject) => {
-      let createdCollections:Collection[];
-      starterCollections.forEach( async (starterCollection) => {
-        try {
-          let createdCollection:Collection = await this.createCollection(
-            { name: starterCollection.name, color: starterCollection.color}, 
-            user, 
-            starterCollection.path, 
-          );
-          createdCollections.push(createdCollection);
-        } catch(err){
-          reject(err);
-        }
+  async createStarterCollections(user: User): Promise<Collection[]> {
+    return new Promise(async (resolve, reject) => {
+      const promises = starterCollections.map(async (starterCollection) => {
+        const createdCollection: Collection = await this.createCollection(
+          { name: starterCollection.name, color: starterCollection.color },
+          user,
+          starterCollection.path,
+        );
+        return createdCollection;
       });
-      resolve(createdCollections);
-    }); 
+      const collections = await Promise.all(promises);
+      resolve(collections);
+    });
   }
-
 }

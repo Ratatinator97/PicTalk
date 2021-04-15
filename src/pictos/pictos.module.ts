@@ -6,19 +6,20 @@ import { CollectionService } from './collection.service';
 import { CollectionRepository } from './collection.repository';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { PictoRepository } from './picto.repository';
-import { AuthModule } from 'src/auth/auth.module';
 import { NoDuplicatasService } from './noDuplicatas.service';
+import { AuthModule } from 'src/auth/auth.module';
 
 @Module({
   imports: [
+    forwardRef(() => AuthModule),
     MulterModule.register({
       dest: './files',
     }),
     TypeOrmModule.forFeature([CollectionRepository]),
     TypeOrmModule.forFeature([PictoRepository]),
-    forwardRef(() => AuthModule),
   ],
   controllers: [PictosController],
   providers: [PictoService, CollectionService, NoDuplicatasService],
+  exports: [PictoService, CollectionService]
 })
-export class PictosModule {}
+export class PictosModule { }

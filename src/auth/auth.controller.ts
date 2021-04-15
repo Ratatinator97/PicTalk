@@ -9,7 +9,9 @@ import {
   Logger,
   Param,
   Inject,
-  forwardRef
+  forwardRef,
+  InternalServerErrorException,
+  OnModuleInit
 } from '@nestjs/common';
 import { AuthCredentialsDto } from './dto/auth-credentials.dto';
 import { AuthService } from './auth.service';
@@ -20,18 +22,43 @@ import { EditUserDto } from './dto/edit-user.dto';
 import { AuthGuard } from '@nestjs/passport';
 import { ResetPasswordDto } from './dto/reset-password.dto';
 import { ChangePasswordDto } from './dto/change-password.dto';
+import { PictoService } from 'src/pictos/pictos.service';
+import { CollectionService } from 'src/pictos/collection.service';
+import { Collection } from 'src/pictos/collection.entity';
+import { Picto } from 'src/pictos/picto.entity';
+import { ModuleRef } from '@nestjs/core';
 
 @Controller('auth')
 export class AuthController {
   private logger = new Logger('AuthController');
-  constructor(private authService: AuthService) {}
+
+  constructor(private authService: AuthService,
+    @Inject(forwardRef(() => PictoService))
+    private pictoService: PictoService,
+    @Inject(forwardRef(() => CollectionService))
+    private collectionService: CollectionService) { }
 
   @Post('/signup')
-  signUp(@Body(ValidationPipe) createUserDto: CreateUserDto): Promise<void> {
+  async signUp(@Body(ValidationPipe) createUserDto: CreateUserDto): Promise<void> {
     this.logger.verbose(
-      `User with Dto: "${createUserDto}" is trying to Sign Up`,
+      `User with username: "${createUserDto.username}" is trying to Sign Up`,
     );
-    return this.authService.signUp(createUserDto);
+    const user = await this.authService.signUp(createUserDto);
+    this.logger.verbose(
+      `Created user: "${user.username}"`,
+    );
+    if (!user) {
+      throw new InternalServerErrorException(`Couldn't create user ${createUserDto.username}`);
+    }
+    const collections: Collection[] = await this.collectionService.createStarterCollections(user);
+    this.logger.verbose(
+      `Created collections for user: "${createUserDto.username}"`,
+    );
+    await this.pictoService.createStarterPackPictosForCollection(user, collections);
+    this.logger.verbose(
+      `Created pictograms for user: "${createUserDto.username}"`,
+    );
+    return;
   }
 
   @Post('/signin')
@@ -57,7 +84,7 @@ export class AuthController {
   changePassword(
     @Body(ValidationPipe) changePasswordDto: ChangePasswordDto,
     @Param('token') token: string,
-  ):Promise<void> {
+  ): Promise<void> {
     this.logger.verbose(
       `${token} is being used !`,
     );

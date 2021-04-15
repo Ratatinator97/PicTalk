@@ -12,14 +12,14 @@ import { CreatePictoDto } from './dto/create-picto.dto';
 import { Collection } from './collection.entity';
 import { unlink } from 'fs';
 import { EditPictoDto } from './dto/edit-picto.dto';
-import { readFileSync } from 'node:fs';
-import { StarterPictoDto } from 'starterPack/starterPicto.dto';
+import { StarterPictoDto } from './dto/starterPicto.dto';
+var pictograms: StarterPictoDto[] = require("./starterPack/startingPackPictos.json");
 @Injectable()
 export class PictoService {
   constructor(
     @InjectRepository(PictoRepository)
     private pictoRepository: PictoRepository,
-  ) {}
+  ) { }
   private logger = new Logger('PictoController');
 
   async getPictos(
@@ -34,7 +34,7 @@ export class PictoService {
     await pictos.map(picto => {
       delete picto.userId;
       delete picto.collection;
-      Object.assign(picto, {collectionId: collectionId});
+      Object.assign(picto, { collectionId: collectionId });
     });
     return pictos;
   }
@@ -137,7 +137,7 @@ export class PictoService {
       throw new NotFoundException();
     }
   }
-  async alternateStar(id:number, user:User):Promise<void>{
+  async alternateStar(id: number, user: User): Promise<void> {
     return this.pictoRepository.alternateStar(id, user);
   }
 
@@ -150,76 +150,76 @@ export class PictoService {
       });
     });
   }
-  async getAllPictos(user:User):Promise<Picto[]>{
+  async getAllPictos(user: User): Promise<Picto[]> {
     const pictos: Picto[] = await this.pictoRepository.find({
       where: { userId: user.id },
       relations: ["collection"],
     });
     await pictos.map(picto => {
       delete picto.userId;
-      Object.assign(picto, {collectionId: picto.collection.id});
+      Object.assign(picto, { collectionId: picto.collection.id });
       delete picto.collection;
     });
     return pictos;
   }
 
-  async createStarterPackPictosForCollection(user:User, collections:Collection[]):Promise<void>{
-    var pictograms:StarterPictoDto[] = require("./../../starterPack/startingPackPictos.json");
-    collections.forEach(async collection => {
-      let collectionPictos:StarterPictoDto[] = pictograms.filter(pictogram => collection.name == pictogram.collectionName);
+  async createStarterPackPictosForCollection(user: User, collections: Collection[]): Promise<void> {
+    collections.map(async collection => {
+      let collectionPictos: StarterPictoDto[] = pictograms.filter(pictogram => collection.name == pictogram.collectionName);
       await this.createStarterPackPictos(user, collection.id, collectionPictos);
     });
   }
 
-  async createStarterPackPictos(user:User, collectionId:number, pictograms:StarterPictoDto[]):Promise<void>{
-    const rootPictograms:Picto[] = await this.createRootPictos(user, collectionId, pictograms);
-    let nonRootPictograms:StarterPictoDto[] = await this.getNonRootPictograms(pictograms);
-    const meaningRootPictos:string[] = rootPictograms.map((rootPicto) => rootPicto.meaning);
-    while(nonRootPictograms.length != 0){
-      nonRootPictograms.forEach(async (picto,index) => {
-        let rootFather:string = meaningRootPictos.filter((meaningRootPicto) => meaningRootPicto == picto.fatherMeaning)[0]
-        if(rootFather){
-          let fatherPicto:Picto = rootPictograms.find((rootPicto) => rootPicto.meaning == rootFather)[0]
-          await this.createPicto({meaning: picto.meaning, speech: picto.speech, folder: picto.folder, fatherId: fatherPicto.id}, user, picto.path, collectionId);
-        } else {
-          let fatherPicto:Picto = await this.findFatherId(picto, nonRootPictograms);
-          if(fatherPicto){
-            await this.createPicto({meaning: picto.meaning, speech: picto.speech, folder: picto.folder, fatherId: fatherPicto.id}, user, picto.path, collectionId);
-            nonRootPictograms.splice(index);
+  async createStarterPackPictos(user: User, collectionId: number, pictograms: StarterPictoDto[]): Promise<void> {
+    return new Promise(async (resolve, reject) => {
+      var createdPictorgams: Picto[] = await this.createRootPictos(user, collectionId, pictograms);
+      console.log("Created Pictograms");
+      console.log(createdPictorgams);
+      var toBeCreatedPictograms: StarterPictoDto[] = await this.getNonRootPictograms(pictograms);
+      console.log("To be created Pictograms");
+      console.log(toBeCreatedPictograms);
+      while (toBeCreatedPictograms.length != 0) {
+        for (const picto of toBeCreatedPictograms) {
+          console.log("Pictogram: ");
+          console.log(picto);
+          let fatherPicto: Picto = createdPictorgams.filter((createdPictogram) => createdPictogram.meaning == picto.fatherId)[0];
+          console.log("Has existing father:");
+          console.log(fatherPicto);
+          if (fatherPicto) {
+            const createdPicto: Picto = await this.createPicto({ meaning: picto.meaning, speech: picto.speech, folder: picto.folder, fatherId: fatherPicto.id }, user, picto.path, collectionId);
+            toBeCreatedPictograms.splice(toBeCreatedPictograms.indexOf(picto));
+            createdPictorgams.push(createdPicto);
           }
         }
-      });
-    }
+        resolve();
+      }
+    });
   }
 
-  async getNonRootPictograms(pictograms:any[]):Promise<any>{
+  async getNonRootPictograms(pictograms: any[]): Promise<any> {
     return pictograms.filter((pictogram) => pictogram.fatherId != "0");
   }
 
 
-  async findFatherId(pictoToInsert, createdPictograms):Promise<Picto>{
+  async findFatherId(pictoToInsert, createdPictograms): Promise<Picto> {
     return createdPictograms.filter((pictogram) => {
       pictogram.meaning == pictoToInsert.fatherId
     });
   }
 
-  async createRootPictos(user:User, collectionId:number, pictograms:StarterPictoDto[]):Promise<Picto[]>{
-    return new Promise((resolve, reject) => {
-      let rootPictograms:Picto[];
-      pictograms.filter((pictogram) => pictogram.fatherMeaning == "0").forEach( async (pictogram) => {
-        try {
-          let picto:Picto = await await this.createPicto(
-            { speech: pictogram.speech, meaning: pictogram.meaning, folder: pictogram.folder, fatherId: 0}, 
-            user, 
-            pictogram.path, 
-            collectionId
-          );
-          rootPictograms.push(picto);
-        } catch(err){
-          reject(err);
-        }
+  async createRootPictos(user: User, collectionId: number, pictograms: StarterPictoDto[]): Promise<Picto[]> {
+    return new Promise(async (resolve, reject) => {
+      const promises: Promise<Picto>[] = pictograms.filter((pictogram) => pictogram.fatherId == "0").map(async (pictogram) => {
+        const picto: Picto = await await this.createPicto(
+          { speech: pictogram.speech, meaning: pictogram.meaning, folder: pictogram.folder, fatherId: 0 },
+          user,
+          pictogram.path,
+          collectionId
+        );
+        return picto;
       });
+      const rootPictograms = await Promise.all(promises);
       resolve(rootPictograms);
-    });  
+    });
   }
 }

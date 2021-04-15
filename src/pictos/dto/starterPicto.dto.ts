@@ -11,7 +11,7 @@ export class StarterPictoDto {
   folder: number;
 
   @IsNotEmpty()
-  fatherMeaning: string;
+  fatherId: string;
 
   @IsNotEmpty()
   path: string;
