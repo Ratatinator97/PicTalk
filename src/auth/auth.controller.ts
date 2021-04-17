@@ -25,18 +25,35 @@ import { ChangePasswordDto } from './dto/change-password.dto';
 import { PictoService } from 'src/pictos/pictos.service';
 import { CollectionService } from 'src/pictos/collection.service';
 import { Collection } from 'src/pictos/collection.entity';
-import { Picto } from 'src/pictos/picto.entity';
-import { ModuleRef } from '@nestjs/core';
-
+import { StarterCollectionDto } from 'src/pictos/dto/starterCollection.dto';
+import { StarterPictoDto } from 'src/pictos/dto/starterPicto.dto';
 @Controller('auth')
 export class AuthController {
   private logger = new Logger('AuthController');
+
+  private FRstarterCollections;
+  private FRpictograms;
+
+  private ESstarterCollections;
+  private ESpictograms;
+
+  private ENstarterCollections;
+  private ENpictograms;
 
   constructor(private authService: AuthService,
     @Inject(forwardRef(() => PictoService))
     private pictoService: PictoService,
     @Inject(forwardRef(() => CollectionService))
-    private collectionService: CollectionService) { }
+    private collectionService: CollectionService) {
+    this.FRstarterCollections = require("../starterPack/FRstartingPackCollection.json");
+    this.FRpictograms = require("../starterPack/FRstartingPackPictos.json");
+
+    this.ESstarterCollections = require("../starterPack/ESstartingPackCollection.json");
+    this.ESpictograms = require("../starterPack/ESstartingPackPictos.json");
+
+    this.ENstarterCollections = require("../starterPack/ENstartingPackCollection.json");
+    this.ENpictograms = require("../starterPack/ENstartingPackPictos.json");
+  }
 
   @Post('/signup')
   async signUp(@Body(ValidationPipe) createUserDto: CreateUserDto): Promise<void> {
@@ -50,11 +67,41 @@ export class AuthController {
     if (!user) {
       throw new InternalServerErrorException(`Couldn't create user ${createUserDto.username}`);
     }
-    const collections: Collection[] = await this.collectionService.createStarterCollections(user);
+    let starterCollections: StarterCollectionDto[];
+    let pictograms: StarterPictoDto[];
+    console.log(createUserDto);
+    if (createUserDto.language) {
+      switch (createUserDto.language) {
+        case "fr-FR":
+          console.log("FR");
+          starterCollections = this.FRstarterCollections;
+          pictograms = this.FRpictograms;
+          break;
+        case "es-ES":
+          console.log("ES");
+          starterCollections = this.ESstarterCollections;
+          pictograms = this.ESpictograms;
+          break;
+        case "en-EN":
+          console.log("EN");
+          starterCollections = this.ENstarterCollections;
+          pictograms = this.ENpictograms;
+          break;
+        default:
+          console.log("Default");
+          starterCollections = this.FRstarterCollections;
+          pictograms = this.FRpictograms;
+          break;
+      }
+    } else {
+      starterCollections = this.FRstarterCollections;
+      pictograms = this.FRpictograms;
+    }
+    const collections: Collection[] = await this.collectionService.createStarterCollections(user, starterCollections);
     this.logger.verbose(
       `Created collections for user: "${createUserDto.username}"`,
     );
-    await this.pictoService.createStarterPackPictosForCollection(user, collections);
+    await this.pictoService.createStarterPackPictosForCollection(user, collections, pictograms);
     this.logger.verbose(
       `Created pictograms for user: "${createUserDto.username}"`,
     );

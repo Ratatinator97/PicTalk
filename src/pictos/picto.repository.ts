@@ -23,8 +23,6 @@ export class PictoRepository extends Repository<Picto> {
   ): Promise<Picto> {
     const { speech, meaning, folder, fatherId } = createPictoDto;
     const picto = new Picto();
-    console.log("New picto creating of fatherId:");
-    console.log(fatherId);
     if (fatherId != 0) {
       const found: Picto = await this.findOne({
         where: { id: fatherId, userId: user.id },

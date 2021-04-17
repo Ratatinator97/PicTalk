@@ -7,7 +7,6 @@ import { CreateCollectionDto } from './dto/create-collection.dto';
 import { unlink } from 'fs';
 import { EditCollectionDto } from './dto/edit-collection.dto';
 import { StarterCollectionDto } from './dto/starterCollection.dto';
-var starterCollections: StarterCollectionDto[] = require("./starterPack/startingPackCollection.json");
 @Injectable()
 export class CollectionService {
   constructor(
@@ -112,7 +111,7 @@ export class CollectionService {
     return true;
   }
 
-  async createStarterCollections(user: User): Promise<Collection[]> {
+  async createStarterCollections(user: User, starterCollections: StarterCollectionDto[]): Promise<Collection[]> {
     return new Promise(async (resolve, reject) => {
       const promises = starterCollections.map(async (starterCollection) => {
         const createdCollection: Collection = await this.createCollection(
