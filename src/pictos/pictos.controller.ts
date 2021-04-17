@@ -124,7 +124,8 @@ export class PictosController {
             createPictoDto,
           )} of "${user.username}"`,
         );
-        const filename: string = await this.noDuplicatasService.noDuplicatas(file.filename);
+   
+        const filename:string = await this.noDuplicatasService.noDuplicatas(file.filename);
         return this.pictoService.createPicto(
           createPictoDto,
           user,

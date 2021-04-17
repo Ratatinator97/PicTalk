@@ -1,9 +1,10 @@
 import { Injectable, InternalServerErrorException, Logger, NotFoundException } from "@nestjs/common";
-import { readdirSync, rename, statSync, unlink } from "fs";
+import { readdirSync, statSync, unlink, copyFile } from "fs";
 import { extname } from "path"
 import * as sizeOf from "image-size";
 import { ISizeCalculationResult } from "image-size/dist/types/interface";
-import { imageHash } from "image-hash";
+import {imageHash } from "image-hash";
+
 @Injectable()
 export class NoDuplicatasService {
     constructor() { }
@@ -16,17 +17,23 @@ export class NoDuplicatasService {
         } catch (err) {
             throw new InternalServerErrorException("Cannot read dir");
         }
-        const similarFiles: string[] = files.filter((file) => file.startsWith(newImage.split('-')[0]));
 
-        if (similarFiles.length == 0) {
+        const similarFiles:string[] = files.filter((file) => file.startsWith(newImage.split('-')[0]));
+        
+        if(similarFiles.length == 0){
+            this.logger.log(`No image with the same name exists : ${newImage} is being moved to Files`);
+            this.moveTmpToFiles(newImage);
             return newImage;
         }
         const isDuplicata: boolean = await this.CheckIfDuplicate(newImage, similarFiles[0]);
         this.logger.debug(`${isDuplicata}`);
-        if (!isDuplicata) {
+
+        if(!isDuplicata){
+            this.logger.log(`${newImage} is being moved to Files after checks`);
             this.moveTmpToFiles(newImage);
             return newImage;
         } else {
+            this.logger.log(`${newImage} is being deleted after checks`);
             this.deleteTmpFile(newImage);
             return similarFiles[0];
         }
@@ -71,18 +78,19 @@ export class NoDuplicatasService {
 
     private async moveTmpToFiles(filename: string): Promise<void> {
         this.logger.debug(`Moving file: ${filename}`);
-        rename("./tmp/" + filename, "./files/" + filename, (err) => {
-            if (err) {
-                throw new NotFoundException(`Couldn't find file: ${filename}`);
+
+        copyFile("./tmp/"+filename,"./files/"+filename, (err)=> {
+            if(err){
+                throw new NotFoundException(`Couldn't find file: ${filename}, Error is : ${err}`);
             }
             return;
         })
     }
     private async deleteTmpFile(filename: string): Promise<void> {
         this.logger.debug(`Deleting file: ${filename}`);
-        unlink("./tmp/" + filename, (err) => {
-            if (err) {
-                throw new InternalServerErrorException(`Couldn't find ${filename}`);
+        unlink("./tmp/"+filename, (err) => {
+            if(err){
+                throw new InternalServerErrorException(`Couldn't find ${filename}, Error is : ${err}`);
             }
             return;
         });
