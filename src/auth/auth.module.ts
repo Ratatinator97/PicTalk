@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -7,10 +7,11 @@ import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { JwtStrategy } from './jwt.strategy';
 import * as config from 'config';
-
+import { PictosModule } from 'src/pictos/pictos.module';
 const jwtConfig = config.get('jwt');
 @Module({
   imports: [
+    forwardRef(() => PictosModule),
     PassportModule.register({ defaultStrategy: 'jwt' }),
     JwtModule.register({
       secret: process.env.JWT_SECRET || jwtConfig.secret,
@@ -30,4 +31,4 @@ const jwtConfig = config.get('jwt');
     PassportModule,
   ]
 })
-export class AuthModule {}
+export class AuthModule { }

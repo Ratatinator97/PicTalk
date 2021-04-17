@@ -17,7 +17,7 @@ sgMail.setApiKey(process.env.SENDGRID_KEY);
 @EntityRepository(User)
 export class UserRepository extends Repository<User> {
   private logger = new Logger('AuthService');
-  async signUp(createUserDto: CreateUserDto): Promise<void> {
+  async signUp(createUserDto: CreateUserDto): Promise<User> {
     const { username, password, language } = createUserDto;
 
     const user = this.create();
@@ -57,6 +57,7 @@ export class UserRepository extends Repository<User> {
       throw new Error(error);
     }
     this.logger.verbose(`User ${user.username} is being saved !`);
+    return user;
   }
 
   async validationPassword(

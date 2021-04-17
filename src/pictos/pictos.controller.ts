@@ -39,13 +39,13 @@ export class PictosController {
     private pictoService: PictoService,
     private collectionService: CollectionService,
     private noDuplicatasService: NoDuplicatasService
-  ) {}
+  ) { }
 
   @Get('/allPictos')
   @UseGuards(AuthGuard())
   getAllPictos(
     @GetUser() user: User,
-  ): Promise<Picto[]>{
+  ): Promise<Picto[]> {
     this.logger.verbose(`User "${user.username}" getting all pictos`);
     return this.pictoService.getAllPictos(user);
   }
@@ -73,18 +73,18 @@ export class PictosController {
   @Put('/picto/:id/star')
   @UseGuards(AuthGuard())
   async alternateStar(
-    @Param('id', ParseIntPipe) id:number,
-    @GetUser() user:User
-  ): Promise<void>{
+    @Param('id', ParseIntPipe) id: number,
+    @GetUser() user: User
+  ): Promise<void> {
     return this.pictoService.alternateStar(id, user);
   }
 
   @Put('/collection/:id/star')
   @UseGuards(AuthGuard())
   async alternateStarCollection(
-    @Param('id', ParseIntPipe) id:number,
-    @GetUser() user:User
-  ): Promise<void>{
+    @Param('id', ParseIntPipe) id: number,
+    @GetUser() user: User
+  ): Promise<void> {
     return this.collectionService.alternateStar(id, user);
   }
 
@@ -105,7 +105,7 @@ export class PictosController {
     @Param('collectionId', ParseIntPipe) collectionId: number,
     @Body() createPictoDto: CreatePictoDto,
     @GetUser() user: User,
-    @UploadedFile() file:Express.Multer.File ,
+    @UploadedFile() file: Express.Multer.File,
   ): Promise<Picto> {
     if (file) {
       let isFolder: number;
@@ -124,7 +124,7 @@ export class PictosController {
             createPictoDto,
           )} of "${user.username}"`,
         );
-            
+   
         const filename:string = await this.noDuplicatasService.noDuplicatas(file.filename);
         return this.pictoService.createPicto(
           createPictoDto,
@@ -160,14 +160,13 @@ export class PictosController {
     @GetUser() user: User,
   ): Promise<Collection> {
     this.logger.verbose(
-      `User "${
-        user.username
+      `User "${user.username
       }" creating a new collection. Data: ${JSON.stringify(
         createCollectionDto,
       )} of "${user.username}"`,
     );
     if (file) {
-      const filename:string = await this.noDuplicatasService.noDuplicatas(file.filename);
+      const filename: string = await this.noDuplicatasService.noDuplicatas(file.filename);
       return this.collectionService.createCollection(
         createCollectionDto,
         user,
@@ -202,7 +201,7 @@ export class PictosController {
       )} of "${user.username}"`,
     );
     if (file) {
-      const filename:string = await this.noDuplicatasService.noDuplicatas(file.filename);
+      const filename: string = await this.noDuplicatasService.noDuplicatas(file.filename);
       return this.collectionService.editCollection(
         id,
         editCollectionDto,
@@ -238,7 +237,7 @@ export class PictosController {
       )} of "${user.username}"`,
     );
     if (file) {
-      const filename:string = await this.noDuplicatasService.noDuplicatas(file.filename);
+      const filename: string = await this.noDuplicatasService.noDuplicatas(file.filename);
       return this.pictoService.editPicto(id, editPictoDto, user, filename);
     } else {
       return this.pictoService.editPicto(id, editPictoDto, user);
