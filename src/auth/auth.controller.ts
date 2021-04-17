@@ -10,8 +10,6 @@ import {
   Param,
   Inject,
   forwardRef,
-  InternalServerErrorException,
-  OnModuleInit
 } from '@nestjs/common';
 import { AuthCredentialsDto } from './dto/auth-credentials.dto';
 import { AuthService } from './auth.service';
@@ -64,9 +62,6 @@ export class AuthController {
     this.logger.verbose(
       `Created user: "${user.username}"`,
     );
-    if (!user) {
-      throw new InternalServerErrorException(`Couldn't create user ${createUserDto.username}`);
-    }
     let starterCollections: StarterCollectionDto[];
     let pictograms: StarterPictoDto[];
     console.log(createUserDto);

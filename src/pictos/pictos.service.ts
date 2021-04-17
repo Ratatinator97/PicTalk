@@ -191,13 +191,6 @@ export class PictoService {
     return pictograms.filter((pictogram) => pictogram.fatherId != "0");
   }
 
-
-  async findFatherId(pictoToInsert, createdPictograms): Promise<Picto> {
-    return createdPictograms.filter((pictogram) => {
-      pictogram.meaning == pictoToInsert.fatherId
-    });
-  }
-
   async createRootPictos(user: User, collectionId: number, pictograms: StarterPictoDto[]): Promise<Picto[]> {
     return new Promise(async (resolve, reject) => {
       const promises: Promise<Picto>[] = pictograms.filter((pictogram) => pictogram.fatherId == "0").map(async (pictogram) => {
