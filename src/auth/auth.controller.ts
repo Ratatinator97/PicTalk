@@ -77,7 +77,7 @@ export class AuthController {
           starterCollections = this.ESstarterCollections;
           pictograms = this.ESpictograms;
           break;
-        case "en-EN":
+        case "en-US" || "en-GB":
           console.log("EN");
           starterCollections = this.ENstarterCollections;
           pictograms = this.ENpictograms;

@@ -178,12 +178,12 @@ export class PictoService {
           let fatherPicto: Picto = createdPictorgams.filter((createdPictogram) => createdPictogram.meaning == picto.fatherId)[0];
           if (fatherPicto) {
             const createdPicto: Picto = await this.createPicto({ meaning: picto.meaning, speech: picto.speech, folder: picto.folder, fatherId: fatherPicto.id }, user, picto.path, collectionId);
-            toBeCreatedPictograms.splice(toBeCreatedPictograms.indexOf(picto));
+            toBeCreatedPictograms.splice(toBeCreatedPictograms.indexOf(picto), 1);
             createdPictorgams.push(createdPicto);
           }
         }
-        resolve();
       }
+      resolve();
     });
   }
 

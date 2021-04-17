@@ -73,16 +73,16 @@
     },
     {
         "collectionName": "Quiero",
-        "speech": "m'assoir",
-        "meaning": "M'ASSOIR",
+        "speech": "sentarme",
+        "meaning": "SENTARME",
         "folder": "0",
         "fatherId": "QUIERO",
         "path": "sit down.png"
     },
     {
         "collectionName": "Quiero",
-        "speech": "voyager",
-        "meaning": "VOYAGER",
+        "speech": "viajar",
+        "meaning": "VIAJAR",
         "folder": "0",
         "fatherId": "QUIERO",
         "path": "travel.png"
