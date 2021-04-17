@@ -121,14 +121,6 @@
     },
     {
         "collectionName": "Je veux",
-        "speech": "à Lyon",
-        "meaning": "LYON",
-        "folder": "0",
-        "fatherId": "ALLER",
-        "path": "Lyon.jpeg"
-    },
-    {
-        "collectionName": "Je veux",
         "speech": "ma maman",
         "meaning": "MAMAN",
         "folder": "0",

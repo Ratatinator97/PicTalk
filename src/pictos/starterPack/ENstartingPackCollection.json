@@ -1,0 +1,27 @@
+[
+    {
+        "name": "Who am I",
+        "color": "#0051FF",
+        "path": "me.png"
+    },
+    {
+        "name": "I'm hurt",
+        "color": "#FF0000",
+        "path": "mal.png"
+    },
+    {
+        "name": "I want",
+        "color": "#1BFF00",
+        "path": "je veux.png"
+    },
+    {
+        "name": "Politeness",
+        "color": "#F300FF",
+        "path": "hola.png"
+    },
+    {
+        "name": "Food and beverages",
+        "color": "#FFE800",
+        "path": "food.png"
+    }
+]

@@ -1,0 +1,274 @@
+[
+    {
+        "collectionName": "Who am I",
+        "speech": "I am 15",
+        "meaning": "15",
+        "folder": "0",
+        "fatherId": "0",
+        "path": "age.png"
+    },
+    {
+        "collectionName": "Who am I",
+        "speech": "My phone number is 06010203",
+        "meaning": "06010203",
+        "folder": "0",
+        "fatherId": "0",
+        "path": "phone.png"
+    },
+    {
+        "collectionName": "Who am I",
+        "speech": "My name is Pablo",
+        "meaning": "PABLO",
+        "folder": "0",
+        "fatherId": "0",
+        "path": "name.png"
+    },
+    {
+        "collectionName": "Who am I",
+        "speech": "I live in Lyon",
+        "meaning": "LYON",
+        "folder": "0",
+        "fatherId": "0",
+        "path": "home.png"
+    },
+    {
+        "collectionName": "I'm hurt",
+        "speech": "I'm hurt",
+        "meaning": "HURT",
+        "folder": "1",
+        "fatherId": "0",
+        "path": "pain.png"
+    },
+    {
+        "collectionName": "I'm hurt",
+        "speech": "I'm sick",
+        "meaning": "MALADE",
+        "folder": "0",
+        "fatherId": "0",
+        "path": "get sick.png"
+    },
+    {
+        "collectionName": "I'm hurt",
+        "speech": "to the head",
+        "meaning": "TETE",
+        "folder": "0",
+        "fatherId": "MAL",
+        "path": "head pain.png"
+    },
+    {
+        "collectionName": "I'm hurt",
+        "speech": "to the arms",
+        "meaning": "BRAS",
+        "folder": "0",
+        "fatherId": "MAL",
+        "path": "arm pain.png"
+    },
+    {
+        "collectionName": "I want",
+        "speech": "I want",
+        "meaning": "WANT",
+        "folder": "1",
+        "fatherId": "0",
+        "path": "je veux.png"
+    },
+    {
+        "collectionName": "I want",
+        "speech": "to sit down",
+        "meaning": "SIT DOWN",
+        "folder": "0",
+        "fatherId": "WANT",
+        "path": "sit down.png"
+    },
+    {
+        "collectionName": "I want",
+        "speech": "to travel",
+        "meaning": "TRAVEL",
+        "folder": "0",
+        "fatherId": "WANT",
+        "path": "travel.png"
+    },
+    {
+        "collectionName": "I want",
+        "speech": "to go",
+        "meaning": "GO",
+        "folder": "1",
+        "fatherId": "WANT",
+        "path": "go.png"
+    },
+    {
+        "collectionName": "I want",
+        "speech": "to sleep",
+        "meaning": "SLEEP",
+        "folder": "0",
+        "fatherId": "WANT",
+        "path": "sleep.png"
+    },
+    {
+        "collectionName": "I want",
+        "speech": "to see",
+        "meaning": "SEE",
+        "folder": "0",
+        "fatherId": "WANT",
+        "path": "see.png"
+    },
+    {
+        "collectionName": "I want",
+        "speech": "to Lyon",
+        "meaning": "LYON",
+        "folder": "0",
+        "fatherId": "GO",
+        "path": "Lyon.png"
+    },
+    {
+        "collectionName": "I want",
+        "speech": "my mom",
+        "meaning": "MOM",
+        "folder": "0",
+        "fatherId": "SEE",
+        "path": "mom.png"
+    },
+    {
+        "collectionName": "Politeness",
+        "speech": "Ok",
+        "meaning": "OKAY",
+        "folder": "0",
+        "fatherId": "0",
+        "path": "okay.png"
+    },
+    {
+        "collectionName": "Politeness",
+        "speech": "No",
+        "meaning": "NO",
+        "folder": "0",
+        "fatherId": "0",
+        "path": "no.png"
+    },
+    {
+        "collectionName": "Politeness",
+        "speech": "Yes",
+        "meaning": "YES",
+        "folder": "0",
+        "fatherId": "0",
+        "path": "yes.png"
+    },
+    {
+        "collectionName": "Politeness",
+        "speech": "Please",
+        "meaning": "PLEASE",
+        "folder": "0",
+        "fatherId": "0",
+        "path": "please.png"
+    },
+    {
+        "collectionName": "Politeness",
+        "speech": "Thanks",
+        "meaning": "THANKS",
+        "folder": "0",
+        "fatherId": "0",
+        "path": "thanks.png"
+    },
+    {
+        "collectionName": "Politeness",
+        "speech": "Are you ok ?",
+        "meaning": "ARE YOU OK ?",
+        "folder": "0",
+        "fatherId": "0",
+        "path": "how are you.png"
+    },
+    {
+        "collectionName": "Politeness",
+        "speech": "Bye",
+        "meaning": "BYE",
+        "folder": "0",
+        "fatherId": "0",
+        "path": "bye.png"
+    },
+    {
+        "collectionName": "Food and beverages",
+        "speech": "I want",
+        "meaning": "WANT",
+        "folder": "1",
+        "fatherId": "0",
+        "path": "want.png"
+    },
+    {
+        "collectionName": "Food and beverages",
+        "speech": "I like",
+        "meaning": "LIKE",
+        "folder": "1",
+        "fatherId": "0",
+        "path": "like.png"
+    },
+    {
+        "collectionName": "Food and beverages",
+        "speech": "I don't like",
+        "meaning": "DON'T LIKE",
+        "folder": "1",
+        "fatherId": "0",
+        "path": "I do not like that.png"
+    },
+    {
+        "collectionName": "Food and beverages",
+        "speech": "to drink",
+        "meaning": "DRINK",
+        "folder": "1",
+        "fatherId": "WANT",
+        "path": "drink.png"
+    },
+    {
+        "collectionName": "Food and beverages",
+        "speech": "to eat",
+        "meaning": "EAT",
+        "folder": "1",
+        "fatherId": "WANT",
+        "path": "eat.png"
+    },
+    {
+        "collectionName": "Food and beverages",
+        "speech": "water",
+        "meaning": "WATER",
+        "folder": "0",
+        "fatherId": "DRINK",
+        "path": "water.png"
+    },
+    {
+        "collectionName": "Food and beverages",
+        "speech": "french fries",
+        "meaning": "FRIES",
+        "folder": "0",
+        "fatherId": "EAT",
+        "path": "french fries.png"
+    },
+    {
+        "collectionName": "Food and beverages",
+        "speech": "to eat",
+        "meaning": "EAT ",
+        "folder": "1",
+        "fatherId": "LIKE",
+        "path": "eat.png"
+    },
+    {
+        "collectionName": "Food and beverages",
+        "speech": "french fries",
+        "meaning": "FRIES",
+        "folder": "0",
+        "fatherId": "EAT ",
+        "path": "french fries.png"
+    },
+    {
+        "collectionName": "Food and beverages",
+        "speech": "to drink",
+        "meaning": "DRINK ",
+        "folder": "1",
+        "fatherId": "DON'T LIKE",
+        "path": "drink.png"
+    },
+    {
+        "collectionName": "Food and beverages",
+        "speech": "water",
+        "meaning": "WATER",
+        "folder": "0",
+        "fatherId": "DRINK ",
+        "path": "water.png"
+    }
+]
