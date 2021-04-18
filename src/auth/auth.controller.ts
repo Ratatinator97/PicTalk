@@ -65,29 +65,33 @@ export class AuthController {
     );
     let starterCollections: StarterCollectionDto[];
     let pictograms: StarterPictoDto[];
+    let language;
     if (createUserDto.language) {
-      switch (createUserDto.language) {
-        case "fr-FR" || "fr-CA":
-          starterCollections = this.FRstarterCollections;
-          pictograms = this.FRpictograms;
-          break;
-        case "es-ES":
-          starterCollections = this.ESstarterCollections;
-          pictograms = this.ESpictograms;
-          break;
-        case "en-US" || "en-GB":
-          console.log("English");
-          starterCollections = this.ENstarterCollections;
-          pictograms = this.ENpictograms;
-          break;
-        default:
-          starterCollections = this.FRstarterCollections;
-          pictograms = this.FRpictograms;
-          break;
+      if (createUserDto.language.includes("fr")) {
+        language = "fr";
+      } else if (createUserDto.language.includes("es")) {
+        language = "es";
+      } else if (createUserDto.language.includes("en")) {
+        language = "en";
       }
-    } else {
-      starterCollections = this.FRstarterCollections;
-      pictograms = this.FRpictograms;
+    }
+    switch (language) {
+      case "fr":
+        starterCollections = this.FRstarterCollections;
+        pictograms = this.FRpictograms;
+        break;
+      case "es":
+        starterCollections = this.ESstarterCollections;
+        pictograms = this.ESpictograms;
+        break;
+      case "en":
+        starterCollections = this.ENstarterCollections;
+        pictograms = this.ENpictograms;
+        break;
+      default:
+        starterCollections = this.FRstarterCollections;
+        pictograms = this.FRpictograms;
+        break;
     }
     const collections: Collection[] = await this.collectionService.createStarterCollections(user, starterCollections);
     this.logger.verbose(
