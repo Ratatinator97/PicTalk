@@ -59,31 +59,27 @@ export class AuthController {
       `User with username: "${createUserDto.username}" is trying to Sign Up`,
     );
     const user = await this.authService.signUp(createUserDto);
+
     this.logger.verbose(
       `Created user: "${user.username}"`,
     );
     let starterCollections: StarterCollectionDto[];
     let pictograms: StarterPictoDto[];
-    console.log(createUserDto);
     if (createUserDto.language) {
       switch (createUserDto.language) {
         case "fr-FR":
-          console.log("FR");
           starterCollections = this.FRstarterCollections;
           pictograms = this.FRpictograms;
           break;
         case "es-ES":
-          console.log("ES");
           starterCollections = this.ESstarterCollections;
           pictograms = this.ESpictograms;
           break;
         case "en-US" || "en-GB":
-          console.log("EN");
           starterCollections = this.ENstarterCollections;
           pictograms = this.ENpictograms;
           break;
         default:
-          console.log("Default");
           starterCollections = this.FRstarterCollections;
           pictograms = this.FRpictograms;
           break;
@@ -101,6 +97,7 @@ export class AuthController {
       `Created pictograms for user: "${createUserDto.username}"`,
     );
     return;
+
   }
 
   @Post('/signin')
