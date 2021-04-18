@@ -42,7 +42,7 @@
     {
         "collectionName": "I'm hurt",
         "speech": "I'm sick",
-        "meaning": "MALADE",
+        "meaning": "SICK",
         "folder": "0",
         "fatherId": "0",
         "path": "get sick.png"
@@ -52,15 +52,15 @@
         "speech": "to the head",
         "meaning": "TETE",
         "folder": "0",
-        "fatherId": "MAL",
+        "fatherId": "HURT",
         "path": "head pain.png"
     },
     {
         "collectionName": "I'm hurt",
         "speech": "to the arms",
-        "meaning": "BRAS",
+        "meaning": "ARM",
         "folder": "0",
-        "fatherId": "MAL",
+        "fatherId": "HURT",
         "path": "arm pain.png"
     },
     {

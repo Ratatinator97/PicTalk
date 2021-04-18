@@ -173,7 +173,8 @@ export class PictoService {
     return new Promise(async (resolve, reject) => {
       var createdPictorgams: Picto[] = await this.createRootPictos(user, collectionId, pictograms);
       var toBeCreatedPictograms: StarterPictoDto[] = await this.getNonRootPictograms(pictograms);
-      while (toBeCreatedPictograms.length != 0) {
+      let counter = 0;
+      while (toBeCreatedPictograms.length != 0 && counter <= 10) {
         for (const picto of toBeCreatedPictograms) {
           let fatherPicto: Picto = createdPictorgams.filter((createdPictogram) => createdPictogram.meaning == picto.fatherId)[0];
           if (fatherPicto) {
@@ -182,6 +183,7 @@ export class PictoService {
             createdPictorgams.push(createdPicto);
           }
         }
+        counter++;
       }
       resolve();
     });

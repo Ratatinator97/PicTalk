@@ -67,7 +67,7 @@ export class AuthController {
     let pictograms: StarterPictoDto[];
     if (createUserDto.language) {
       switch (createUserDto.language) {
-        case "fr-FR":
+        case "fr-FR" || "fr-CA":
           starterCollections = this.FRstarterCollections;
           pictograms = this.FRpictograms;
           break;
@@ -76,6 +76,7 @@ export class AuthController {
           pictograms = this.ESpictograms;
           break;
         case "en-US" || "en-GB":
+          console.log("English");
           starterCollections = this.ENstarterCollections;
           pictograms = this.ENpictograms;
           break;
