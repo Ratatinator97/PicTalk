@@ -7,7 +7,9 @@ import {
   Put,
   UseGuards,
   Logger,
-  Param
+  Param,
+  Inject,
+  forwardRef,
 } from '@nestjs/common';
 import { AuthCredentialsDto } from './dto/auth-credentials.dto';
 import { AuthService } from './auth.service';
@@ -18,18 +20,89 @@ import { EditUserDto } from './dto/edit-user.dto';
 import { AuthGuard } from '@nestjs/passport';
 import { ResetPasswordDto } from './dto/reset-password.dto';
 import { ChangePasswordDto } from './dto/change-password.dto';
-
+import { PictoService } from 'src/pictos/pictos.service';
+import { CollectionService } from 'src/pictos/collection.service';
+import { Collection } from 'src/pictos/collection.entity';
+import { StarterCollectionDto } from 'src/pictos/dto/starterCollection.dto';
+import { StarterPictoDto } from 'src/pictos/dto/starterPicto.dto';
 @Controller('auth')
 export class AuthController {
   private logger = new Logger('AuthController');
-  constructor(private authService: AuthService) {}
+
+  private FRstarterCollections;
+  private FRpictograms;
+
+  private ESstarterCollections;
+  private ESpictograms;
+
+  private ENstarterCollections;
+  private ENpictograms;
+
+  constructor(private authService: AuthService,
+    @Inject(forwardRef(() => PictoService))
+    private pictoService: PictoService,
+    @Inject(forwardRef(() => CollectionService))
+    private collectionService: CollectionService) {
+    this.FRstarterCollections = require("../starterPack/FRstartingPackCollection.json");
+    this.FRpictograms = require("../starterPack/FRstartingPackPictos.json");
+
+    this.ESstarterCollections = require("../starterPack/ESstartingPackCollection.json");
+    this.ESpictograms = require("../starterPack/ESstartingPackPictos.json");
+
+    this.ENstarterCollections = require("../starterPack/ENstartingPackCollection.json");
+    this.ENpictograms = require("../starterPack/ENstartingPackPictos.json");
+  }
 
   @Post('/signup')
-  signUp(@Body(ValidationPipe) createUserDto: CreateUserDto): Promise<void> {
+  async signUp(@Body(ValidationPipe) createUserDto: CreateUserDto): Promise<void> {
     this.logger.verbose(
-      `User with Dto: "${createUserDto}" is trying to Sign Up`,
+      `User with username: "${createUserDto.username}" is trying to Sign Up`,
     );
-    return this.authService.signUp(createUserDto);
+    const user = await this.authService.signUp(createUserDto);
+
+    this.logger.verbose(
+      `Created user: "${user.username}"`,
+    );
+    let starterCollections: StarterCollectionDto[];
+    let pictograms: StarterPictoDto[];
+    let language;
+    if (createUserDto.language) {
+      if (createUserDto.language.includes("fr")) {
+        language = "fr";
+      } else if (createUserDto.language.includes("es")) {
+        language = "es";
+      } else if (createUserDto.language.includes("en")) {
+        language = "en";
+      }
+    }
+    switch (language) {
+      case "fr":
+        starterCollections = this.FRstarterCollections;
+        pictograms = this.FRpictograms;
+        break;
+      case "es":
+        starterCollections = this.ESstarterCollections;
+        pictograms = this.ESpictograms;
+        break;
+      case "en":
+        starterCollections = this.ENstarterCollections;
+        pictograms = this.ENpictograms;
+        break;
+      default:
+        starterCollections = this.FRstarterCollections;
+        pictograms = this.FRpictograms;
+        break;
+    }
+    const collections: Collection[] = await this.collectionService.createStarterCollections(user, starterCollections);
+    this.logger.verbose(
+      `Created collections for user: "${createUserDto.username}"`,
+    );
+    await this.pictoService.createStarterPackPictosForCollection(user, collections, pictograms);
+    this.logger.verbose(
+      `Created pictograms for user: "${createUserDto.username}"`,
+    );
+    return;
+
   }
 
   @Post('/signin')
@@ -55,7 +128,7 @@ export class AuthController {
   changePassword(
     @Body(ValidationPipe) changePasswordDto: ChangePasswordDto,
     @Param('token') token: string,
-  ):Promise<void> {
+  ): Promise<void> {
     this.logger.verbose(
       `${token} is being used !`,
     );

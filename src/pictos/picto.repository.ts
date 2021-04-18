@@ -19,7 +19,7 @@ export class PictoRepository extends Repository<Picto> {
     user: User,
     filename: string,
     collectionId: number,
-  ):Promise<Picto> {
+  ): Promise<Picto> {
     const { speech, meaning, folder, fatherId } = createPictoDto;
     const picto = new Picto();
     if (fatherId != 0) {
@@ -43,8 +43,7 @@ export class PictoRepository extends Repository<Picto> {
       await picto.save();
     } catch (error) {
       this.logger.error(
-        `Failed to create a picto for user "${
-          user.username
+        `Failed to create a picto for user "${user.username
         }". Data: ${JSON.stringify(createPictoDto)}`,
         error.stack,
       );
@@ -85,8 +84,7 @@ export class PictoRepository extends Repository<Picto> {
         await picto.save();
       } catch (error) {
         this.logger.error(
-          `Failed to create a pictogram for user "${
-            user.username
+          `Failed to create a pictogram for user "${user.username
           }". Data: ${JSON.stringify(editPictoDto)}`,
           error.stack,
         );
@@ -100,17 +98,16 @@ export class PictoRepository extends Repository<Picto> {
       throw new NotFoundException('Edited Pictogram does not exist');
     }
   }
-  async alternateStar(id:number, user:User):Promise<void>{
-    const picto = await this.findOne({id: id, userId:user.id});
-    if(picto){
+  async alternateStar(id: number, user: User): Promise<void> {
+    const picto = await this.findOne({ id: id, userId: user.id });
+    if (picto) {
       picto.starred ? picto.starred = false : picto.starred = true;
       try {
         await picto.save();
         return;
       } catch (error) {
         this.logger.error(
-          `Failed to edit star of a pictogram for user "${
-            user.username
+          `Failed to edit star of a pictogram for user "${user.username
           }". Data: ${JSON.stringify(picto.id)}`,
           error.stack,
         );

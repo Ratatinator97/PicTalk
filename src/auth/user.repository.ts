@@ -17,14 +17,14 @@ sgMail.setApiKey(process.env.SENDGRID_KEY);
 @EntityRepository(User)
 export class UserRepository extends Repository<User> {
   private logger = new Logger('AuthService');
-  async signUp(createUserDto: CreateUserDto): Promise<void> {
+  async signUp(createUserDto: CreateUserDto): Promise<User> {
     const { username, password, language } = createUserDto;
 
     const user = this.create();
     user.username = username;
     user.salt = await bcrypt.genSalt();
     user.password = await this.hashPassword(password, user.salt);
-    
+
     user.resetPasswordToken = '';
     user.resetPasswordExpires = '';
 
@@ -37,7 +37,7 @@ export class UserRepository extends Repository<User> {
     try {
       await user.save();
     } catch (error) {
-      if (error.code === 23505) {
+      if (error.code == 23505) {
         //Duplicate Username
         throw new ConflictException('Username already exists');
       } else {
@@ -57,6 +57,7 @@ export class UserRepository extends Repository<User> {
       throw new Error(error);
     }
     this.logger.verbose(`User ${user.username} is being saved !`);
+    return user;
   }
 
   async validationPassword(
@@ -78,7 +79,7 @@ export class UserRepository extends Repository<User> {
   ): Promise<void> {
     const { username } = resetPasswordDto;
     const user = await this.findOne({ username });
-    if(!user){
+    if (!user) {
       return;
     }
 
@@ -133,17 +134,17 @@ export class UserRepository extends Repository<User> {
       throw new InternalServerErrorException(error);
     }
   }
-  async changePassword(changePasswordDto:ChangePasswordDto, token:string):Promise<void>{
+  async changePassword(changePasswordDto: ChangePasswordDto, token: string): Promise<void> {
     const { password } = changePasswordDto;
-    const user = await this.findOne({where: {resetPasswordToken: token}});
-    if(!user){
+    const user = await this.findOne({ where: { resetPasswordToken: token } });
+    if (!user) {
       return;
-    } 
-    if(Number(user.resetPasswordExpires) > Date.now()){
+    }
+    if (Number(user.resetPasswordExpires) > Date.now()) {
       user.salt = await bcrypt.genSalt();
       user.password = await this.hashPassword(password, user.salt);
       user.resetPasswordToken = "";
-      user.resetPasswordExpires= "";
+      user.resetPasswordExpires = "";
       try {
         await user.save();
       } catch (error) {
