@@ -3,6 +3,7 @@ import { User } from './user.entity';
 import { AuthCredentialsDto } from './dto/auth-credentials.dto';
 import {
   ConflictException,
+  Injectable,
   InternalServerErrorException,
   Logger,
 } from '@nestjs/common';
@@ -15,6 +16,7 @@ import { ChangePasswordDto } from './dto/change-password.dto';
 sgMail.setApiKey(process.env.SENDGRID_KEY);
 
 @EntityRepository(User)
+@Injectable()
 export class UserRepository extends Repository<User> {
   private logger = new Logger('AuthService');
   async signUp(createUserDto: CreateUserDto): Promise<User> {

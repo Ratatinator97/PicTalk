@@ -16,10 +16,9 @@ export class AuthService {
   private logger = new Logger('AuthService');
 
   constructor(
-    @InjectRepository(User)
     private userRepository: UserRepository,
     private jwtService: JwtService,
-  ) {}
+  ) { }
 
   async signUp(createUserDto: CreateUserDto): Promise<User> {
     return this.userRepository.signUp(createUserDto);
@@ -62,7 +61,7 @@ export class AuthService {
     return this.userRepository.getUserDetails(user);
   }
 
-  async changePassword(changePasswordDto:ChangePasswordDto, token:string):Promise<void>{
+  async changePassword(changePasswordDto: ChangePasswordDto, token: string): Promise<void> {
     return this.userRepository.changePassword(changePasswordDto, token);
   }
 
