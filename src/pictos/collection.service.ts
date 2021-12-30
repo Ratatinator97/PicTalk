@@ -69,12 +69,6 @@ export class CollectionService {
     if (!collection) {
       throw new NotFoundException();
     }
-
-    unlink('./files/' + collection.path, () => {
-      this.logger.verbose(
-        `Collection of path "${collection.path}" successfully deleted`,
-      );
-    });
     const result = await this.collectionRepository.delete({
       id: id,
       userId: user.id,

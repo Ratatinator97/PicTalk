@@ -73,11 +73,6 @@ export class PictoRepository extends Repository<Picto> {
       picto.folder = folder;
       picto.fatherId = fatherId;
       if (filename) {
-        unlink('./files/' + picto.path, () => {
-          this.logger.verbose(
-            `Pictogram of path "${picto.path}" successfully deleted`,
-          );
-        });
         picto.path = filename;
       }
       try {

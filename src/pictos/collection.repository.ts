@@ -58,11 +58,6 @@ export class CollectionRepository extends Repository<Collection> {
       collection.name = name;
       collection.color = color;
       if (filename) {
-        unlink('./files/' + collection.path, () => {
-          this.logger.verbose(
-            `Collection of path "${collection.path}" successfully deleted`,
-          );
-        });
         collection.path = filename;
       }
       try {

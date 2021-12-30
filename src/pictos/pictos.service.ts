@@ -64,9 +64,6 @@ export class PictoService {
   }
 
   async deletePictoRecursive(picto: Picto, user: User): Promise<any[]> {
-    unlink('./files/' + picto.path, () => {
-      this.logger.verbose(`Picto of path "${picto.path}" successfully deleted`);
-    });
     const pictos: Picto[] = await this.pictoRepository.find({
       where: { fatherId: picto.id, userId: user.id },
     });
@@ -141,13 +138,6 @@ export class PictoService {
   }
 
   async deleteMultiple(pictos: Picto[]) {
-    pictos.forEach(picto => {
-      unlink('./files/' + picto.path, () => {
-        this.logger.verbose(
-          `Picto of path "${picto.path}" successfully deleted`,
-        );
-      });
-    });
   }
   async getAllPictos(user: User): Promise<Picto[]> {
     const pictos: Picto[] = await this.pictoRepository.find({
